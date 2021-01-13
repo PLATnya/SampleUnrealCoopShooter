@@ -40,3 +40,18 @@ void AMPlayerCharacter::LookUp(float Value)
 		AddControllerPitchInput(Value);
 	}
 }
+
+void AMPlayerCharacter::Turn(float Value)
+{
+	AddControllerYawInput(Value);
+}
+
+void AMPlayerCharacter::MoveForward(float Value)
+{
+	AddMovementInput(GetActorForwardVector(),Value);
+}
+
+void AMPlayerCharacter::MoveRight(float Value)
+{
+	AddMovementInput(GetActorRightVector(), Value);
+}
