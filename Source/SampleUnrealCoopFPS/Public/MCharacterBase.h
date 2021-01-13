@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include <activation.h>
+
 #include "GameFramework/Character.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
@@ -50,7 +53,7 @@ public:
     float GetMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "MCharacter|Attributes")
 	virtual void SetHealth(float Health);
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MCharacter|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -58,6 +61,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	AMInteractActor* RightHandHandler;
 
+	
+
+	
+
+	
+	
 	UFUNCTION(BlueprintCallable)
 	bool GetInHand(AMInteractActor* InteractActor);
 

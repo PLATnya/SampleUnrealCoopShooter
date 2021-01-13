@@ -18,32 +18,23 @@ void AMInteractActor::BeginPlay()
 	
 }
 
+bool AMInteractActor::TryGet()
+{
+	if(UsersCount< UsersLimit)
+	{
+		UsersCount++;
+		return true;
+	}
+	return false;
+}
+
 // Called every frame
 void AMInteractActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-bool AMInteractActor::SetUser(AMCharacterBase* User)
-{
-	if(Users.Num()<UsersLimit)
-	{
-		Users.Add(User);
-		return true;
-	}
-	return false;
-}
 
-bool AMInteractActor::BreakUser(AMCharacterBase* User)
-{
-	const int BuffSize = Users.Num();
-	Users.Remove(User);
-	if(BuffSize>Users.Num())
-	{
-		if(bInLeftHand) User->LeftHandHandler = NULL;
-		if(bInRightHand) User->RightHandHandler = NULL;
-		return true;
-	}
-	return false;
-}
+
+
 

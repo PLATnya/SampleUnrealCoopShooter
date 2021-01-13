@@ -83,9 +83,10 @@ void AMCharacterBase::SetHealth(float Health)
 	
 }
 
+
 bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
 {
-	if(InteractActor->SetUser(this))
+	if(InteractActor->TryGet())
 	{
 		const bool LeftHandValid = IsValid(LeftHandHandler);
 		const bool RightHandValid = IsValid(RightHandHandler);
@@ -120,9 +121,11 @@ bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
 float AMCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	SetHealth(FMath::Clamp(GetHealth() - DamageAmount, 0.0f,GetMaxHealth()));
 	
-	UE_LOG(LogTemp,Display,TEXT("%s take %f damage from %s"),*GetNameSafe(this), DamageAmount, *GetNameSafe(DamageCauser) );
-	return DamageAmount;
+	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	SetHealth(FMath::Clamp(GetHealth() - ActualDamage, 0.0f,GetMaxHealth()));
+	
+	UE_LOG(LogTemp,Display,TEXT("%s take %f damage from %s"),*GetNameSafe(this), ActualDamage, *GetNameSafe(DamageCauser) );
+	return ActualDamage;
 }
 

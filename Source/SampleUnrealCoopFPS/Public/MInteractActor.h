@@ -22,21 +22,24 @@ public:
 	AMInteractActor();
 
 protected:
+	
+	
+	int32 UsersCount;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(BlueprintReadOnly)
-	TArray<AMCharacterBase*> Users;
 	
 	UPROPERTY(BlueprintReadWrite)
 	int32 UsersLimit;
-	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual bool SetUser(AMCharacterBase* User);
-	virtual bool BreakUser(AMCharacterBase* User);
+	virtual bool TryGet();
 
+	
+	virtual void Tick(float DeltaTime) override;
+
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bInRightHand;
 	UPROPERTY(BlueprintReadOnly)
