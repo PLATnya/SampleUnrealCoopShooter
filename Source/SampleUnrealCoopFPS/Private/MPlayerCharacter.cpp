@@ -30,7 +30,7 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAxis("LookUp", this, &AMPlayerCharacter::LookUp);
 	PlayerInputComponent->BindAxis("Turn", this, &AMPlayerCharacter::Turn);
-
+	
 }
 
 void AMPlayerCharacter::LookUp(float Value)

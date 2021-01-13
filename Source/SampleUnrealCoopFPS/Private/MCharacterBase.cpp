@@ -10,7 +10,6 @@ AMCharacterBase::AMCharacterBase()
 	
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
-
 	
 }
 
@@ -77,7 +76,11 @@ void AMCharacterBase::SetHealth(float Health)
 	if (IsValid(AttributeSet))
 	{
 		AttributeSet->SetHealth(Health);
+	}else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("not valid"));
 	}
+	
 }
 
 bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
@@ -114,6 +117,12 @@ bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
 }
 
 
-
-
+float AMCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	SetHealth(FMath::Clamp(GetHealth() - DamageAmount, 0.0f,GetMaxHealth()));
+	
+	UE_LOG(LogTemp,Display,TEXT("%s take %f damage from %s"),*GetNameSafe(this), DamageAmount, *GetNameSafe(DamageCauser) );
+	return DamageAmount;
+}
 
