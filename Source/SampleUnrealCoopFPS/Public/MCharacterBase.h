@@ -7,7 +7,11 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "MAttributeSetCharacter.h"
+#include "MInteractActor.h"
 #include "MCharacterBase.generated.h"
+
+
+
 
 UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -48,5 +52,12 @@ public:
 	virtual void SetHealth(float Health);
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	AMInteractActor* LeftHandHandler;
+	UPROPERTY(BlueprintReadWrite)
+	AMInteractActor* RightHandHandler;
+
+	UFUNCTION(BlueprintCallable)
+	bool GetInHand(AMInteractActor* InteractActor);
 };

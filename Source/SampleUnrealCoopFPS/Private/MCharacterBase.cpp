@@ -80,5 +80,40 @@ void AMCharacterBase::SetHealth(float Health)
 	}
 }
 
+bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
+{
+	if(InteractActor->SetUser(this))
+	{
+		const bool LeftHandValid = IsValid(LeftHandHandler);
+		const bool RightHandValid = IsValid(RightHandHandler);
+		if(InteractActor->bInLeftHand&&InteractActor->bInRightHand)
+		{
+			if(!LeftHandValid&&!RightHandValid)
+			{
+			
+				LeftHandHandler = InteractActor;
+				RightHandHandler = InteractActor;
+				return true;
+			}
+		}else
+		{
+			if(InteractActor->bInRightHand)
+			{
+			
+				RightHandHandler = InteractActor;
+				return true;
+			}
+			if(InteractActor->bInLeftHand)
+			{
+				LeftHandHandler = InteractActor;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+
 
 
