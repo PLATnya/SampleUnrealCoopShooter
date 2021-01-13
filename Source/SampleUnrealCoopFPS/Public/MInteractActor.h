@@ -33,9 +33,11 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int32 UsersLimit;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Interact")
 	virtual bool TryGet();
 
+	UFUNCTION(BlueprintCallable,Category="Interact")
+	void SetActive(bool Active);
 	
 	virtual void Tick(float DeltaTime) override;
 

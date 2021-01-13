@@ -28,6 +28,13 @@ bool AMInteractActor::TryGet()
 	return false;
 }
 
+void AMInteractActor::SetActive(bool Active)
+{
+	SetActorHiddenInGame(!Active);
+	SetActorEnableCollision(Active);
+	SetActorTickEnabled(Active);
+}
+
 // Called every frame
 void AMInteractActor::Tick(float DeltaTime)
 {
