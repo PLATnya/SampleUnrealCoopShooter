@@ -1,34 +1,84 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "MCharacterBase.h"
 
-// Sets default values
 AMCharacterBase::AMCharacterBase()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 
 	PrimaryActorTick.bCanEverTick = true;
+	
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
+	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
 
-}
-
-// Called when the game starts or when spawned
-void AMCharacterBase::BeginPlay()
-{
-	Super::BeginPlay();
 	
 }
 
-// Called every frame
+void AMCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+	AddCharacterAbilities();
+}
+
+
 void AMCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
-
-// Called to bind functionality to input
-void AMCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+bool AMCharacterBase::IsAlive() const
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	return GetHealth() > 0.0f;
 }
+
+UAbilitySystemComponent* AMCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+void AMCharacterBase::AddCharacterAbilities()
+{
+	// Grant abilities, but only on the server	
+	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent))
+	{
+		return;
+	}
+
+	int index = 0;
+	for (TSubclassOf<UGameplayAbility>& StartupAbility : CharacterAbilities)
+	{
+		AbilitySystemComponent->GiveAbility(
+            FGameplayAbilitySpec(StartupAbility, 1, index, this));
+		index++;
+	}
+}
+
+float AMCharacterBase::GetHealth() const
+{
+	if (IsValid(AttributeSet))
+	{
+		return AttributeSet->GetHealth();
+	}
+
+	return 0.0f;
+}
+float AMCharacterBase::GetMaxHealth() const
+{
+	if (IsValid(AttributeSet))
+	{
+		
+		return AttributeSet->GetMaxHealth();
+	}
+	
+	return 0.0f;
+}
+void AMCharacterBase::SetHealth(float Health)
+{
+	if (IsValid(AttributeSet))
+	{
+		AttributeSet->SetHealth(Health);
+	}
+}
+
+
 

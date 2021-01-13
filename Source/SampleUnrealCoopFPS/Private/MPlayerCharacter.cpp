@@ -40,29 +40,3 @@ void AMPlayerCharacter::LookUp(float Value)
 		AddControllerPitchInput(Value);
 	}
 }
-
-
-void AMPlayerCharacter::Turn(float Value)
-{
-	if (IsAlive())
-	{
-		AddControllerYawInput(Value);
-	}
-}
-
-
-void AMPlayerCharacter::MoveForward(float Value)
-{
-	if (IsAlive())
-	{
-		AddMovementInput(GetActorForwardVector(), Value);
-	}
-}
-
-void AMPlayerCharacter::MoveRight(float Value)
-{
-	if (IsAlive())
-	{
-		AddMovementInput(GetActorRightVector(), Value);
-	}
-}

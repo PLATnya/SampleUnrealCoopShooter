@@ -3,3 +3,8 @@
 
 #include "MAttributeSetCharacter.h"
 
+UMAttributeSetCharacter::UMAttributeSetCharacter()
+{
+	Health = 100;
+	MaxHealth = 100;
+}

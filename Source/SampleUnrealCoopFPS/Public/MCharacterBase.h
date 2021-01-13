@@ -4,26 +4,49 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
+#include "MAttributeSetCharacter.h"
 #include "MCharacterBase.generated.h"
 
 UCLASS()
-class SAMPLEUNREALCOOPFPS_API AMCharacterBase : public ACharacter
+class SAMPLEUNREALCOOPFPS_API AMCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
-public:
-	// Sets default values for this character's properties
-	AMCharacterBase();
+
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+   	
+    
+   	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
+   	class UAbilitySystemComponent* AbilitySystemComponent;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities | Attributes", meta = (AllowPrivateAccess = "true"))
+    class UMAttributeSetCharacter* AttributeSet;
+	
+	
+	AMCharacterBase();
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void Tick(float DeltaTime) override;
+	
+	
+	// Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
+	
+	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
+	virtual void AddCharacterAbilities();
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	UFUNCTION(BlueprintCallable, Category = "MCharacter")
+    virtual bool IsAlive() const;
+	UFUNCTION(BlueprintCallable, Category = "MCharacter|Attributes")
+	float GetHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "MCharacter|Attributes")
+    float GetMaxHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "MCharacter|Attributes")
+	virtual void SetHealth(float Health);
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
+	
 };
