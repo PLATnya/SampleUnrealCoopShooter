@@ -2,7 +2,7 @@
 
 
 #include "MCharacterBase.h"
-
+#include "Templates/UnrealTemplate.h"
 AMCharacterBase::AMCharacterBase()
 {
  
@@ -10,14 +10,13 @@ AMCharacterBase::AMCharacterBase()
 	
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
-	
 }
 
 void AMCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	AddCharacterAbilities();
-}
+	AddCharacterAbilities(); 
+ }
 
 
 void AMCharacterBase::Tick(float DeltaTime)
@@ -84,19 +83,24 @@ void AMCharacterBase::SetHealth(float Health)
 }
 
 
+void AMCharacterBase::SwapHandlers()
+{
+	Swap(MainHandler,AltHandler);
+}
+
 bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
 {
 	if(InteractActor->TryGet())
 	{
-		const bool LeftHandValid = IsValid(LeftHandHandler);
-		const bool RightHandValid = IsValid(RightHandHandler);
+		const bool LeftHandValid = IsValid(MainHandler);
+		const bool RightHandValid = IsValid(AltHandler);
 		if(InteractActor->bInLeftHand&&InteractActor->bInRightHand)
 		{
 			if(!LeftHandValid&&!RightHandValid)
 			{
 			
-				LeftHandHandler = InteractActor;
-				RightHandHandler = InteractActor;
+				MainHandler = InteractActor;
+				AltHandler = InteractActor;
 				return true;
 			}
 		}else
@@ -104,12 +108,12 @@ bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
 			if(InteractActor->bInRightHand)
 			{
 			
-				RightHandHandler = InteractActor;
+				AltHandler = InteractActor;
 				return true;
 			}
 			if(InteractActor->bInLeftHand)
 			{
-				LeftHandHandler = InteractActor;
+				MainHandler = InteractActor;
 				return true;
 			}
 		}

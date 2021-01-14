@@ -42,6 +42,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bInRightHand;
 	UPROPERTY(BlueprintReadOnly)

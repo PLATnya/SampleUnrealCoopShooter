@@ -27,8 +27,9 @@ void UMInventoryComponent::BeginPlay()
 
 bool UMInventoryComponent::TryAdd(AMGunActor* NewGun)
 {
-	if(Guns.Add(NewGun)) return true;
+	if(Guns.Num()>=GunsLimit) return false;
 	
+	if(Guns.Add(NewGun).IsValidId()) return true;
 	return false;
 }
 

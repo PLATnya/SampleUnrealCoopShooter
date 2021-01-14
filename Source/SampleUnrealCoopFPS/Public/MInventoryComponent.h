@@ -22,11 +22,13 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	
+	UPROPERTY(BlueprintReadOnly)
 	TSet<AMGunActor*> Guns;
+
+	UPROPERTY(BlueprintReadWrite)
 	int32 GunsLimit;
 
-
+	UFUNCTION(BlueprintCallable)
 	bool TryAdd(AMGunActor* NewGun);
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,

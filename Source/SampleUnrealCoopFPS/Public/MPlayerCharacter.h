@@ -28,8 +28,15 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UMInventoryComponent* Inventory;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UMInventoryComponent* Inventory;
 
+
+
+	void ChangeWeapon(const int32 Index);
+
+
+	
 	
 	void LookUp(float Value);
 	void Turn(float Value);

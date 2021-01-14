@@ -6,7 +6,7 @@ AMPlayerCharacter::AMPlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Inventory = CreateDefaultSubobject<UMInventoryComponent>('InventoryOfGuns');
+	Inventory = CreateDefaultSubobject<UMInventoryComponent>("InventoryOfGuns");
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +33,55 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("Turn", this, &AMPlayerCharacter::Turn);
 	
 }
+
+void AMPlayerCharacter::ChangeWeapon(const int32 Index)
+{
+	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler);
+	if(!MainGun) return;
+	if(Index>=Inventory->Guns.Num()) return;
+	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler);
+	
+	FSetElementId SetIndex;
+	AMGunActor* Gun = Inventory->Guns[SetIndex.FromInteger(Index)];
+	const bool bTwoHanded = Gun->bInLeftHand&&Gun->bInRightHand;
+	const bool HandlerValid = IsValid(MainGun);
+	const bool ALtHandlerValid = IsValid(AltGun);
+	if(bTwoHanded)
+	{
+		
+		if(MainGun == Gun)
+		{
+			MainGun->GunState->Hide();
+			MainHandler = nullptr;
+			AltHandler = nullptr;
+			return;
+		}
+		if(HandlerValid) MainGun->GunState->Hide();
+		if(ALtHandlerValid) AltGun->GunState->Hide();
+		Gun->GunState = NewObject<UMCenterGunState>();
+		MainHandler = Gun;
+		AltHandler = Gun;
+		Gun->GunState->Show();
+	}else
+	{
+		if(MainGun == Gun)
+		{
+			MainGun->GunState->Hide();
+			MainHandler = nullptr;
+			return;
+		}
+		if(AltGun==Gun)
+		{
+			AltGun->GunState->Hide();
+			AltHandler = nullptr;
+		}
+		Gun->GunState = NewObject<UMLeftGunState>();
+		Gun->GunState->Show();
+		MainHandler = Gun;
+	}
+}
+
+
 
 void AMPlayerCharacter::LookUp(float Value)
 {

@@ -10,6 +10,9 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "MAttributeSetCharacter.h"
+
+#include "GameplayAbilitySet.h"
+
 #include "MInteractActor.h"
 #include "MCharacterBase.generated.h"
 
@@ -56,15 +59,19 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MCharacter|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
+	
+	//UGameplayAbilitySet* AbilitySet;
+	
+	
 	UPROPERTY(BlueprintReadWrite)
-	AMInteractActor* LeftHandHandler;
+	AMInteractActor* MainHandler;
 	UPROPERTY(BlueprintReadWrite)
-	AMInteractActor* RightHandHandler;
+	AMInteractActor* AltHandler;
 
 	
 
-	
-
+	UFUNCTION(BlueprintCallable)
+	void SwapHandlers();
 	
 	
 	UFUNCTION(BlueprintCallable)
