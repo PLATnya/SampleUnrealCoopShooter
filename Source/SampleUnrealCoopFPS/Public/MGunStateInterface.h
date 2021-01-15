@@ -48,7 +48,7 @@ class SAMPLEUNREALCOOPFPS_API UMRightGunState:public UMGunStateInterface{
 	public:
 	
 	
-    virtual void Config(const FVector Offset = FVector(70,-50,50) , const FVector OutOffset =FVector(70,-50,50));
+    virtual void Config(const FVector Offset = FVector(70,50,50) , const FVector OutOffset =FVector(70,50,50));
 	
 };
 UCLASS()
@@ -57,6 +57,6 @@ class SAMPLEUNREALCOOPFPS_API UMCenterGunState:public UMGunStateInterface{
 	public:
 	
 	
-   virtual void Config(const FVector Offset = FVector(70,0,50) , const FVector OutOffset = FVector(70,-50,50));
+   virtual void Config(const FVector Offset = FVector(70,0,50) , const FVector OutOffset = FVector(70,0,50));
 	
 };

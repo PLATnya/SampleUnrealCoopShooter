@@ -39,12 +39,12 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 
 	AMGunActor* Gun = Inventory->Guns[Index];
 	UE_LOG(LogTemp,Display,TEXT("new gun is: %s"),*GetNameSafe(Gun));
-	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler);
+	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler.InteractHandler);
 	if(Index>=Inventory->Guns.Num())
 		return;
 
 	const bool bTwoHanded = Gun->bInLeftHand&&Gun->bInRightHand;
-	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler);
+	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler.InteractHandler);
 	const bool HandlerValid = IsValid(MainGun);
 	const bool ALtHandlerValid = IsValid(AltGun);
 	if(bTwoHanded)
@@ -52,21 +52,21 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		if(HandlerValid)
 		{
 			MainGun->GunState->Hide();
-			MainHandler = nullptr;
+			MainHandler.InteractHandler = nullptr;
 			
 			if(MainGun == Gun)
 			{
-				AltHandler = nullptr;
+				AltHandler.InteractHandler = nullptr;
 				return;
 			}
 		}
 		if(ALtHandlerValid) AltGun->GunState->Hide();
-		AltHandler = nullptr;
+		AltHandler.InteractHandler = nullptr;
 		UMCenterGunState* NewState = NewObject<UMCenterGunState>();
 		Gun->GunState = NewState;
 		Gun->GunState->SetGun(Gun);
-		MainHandler = Gun;
-		AltHandler = Gun;
+		MainHandler.InteractHandler = Gun;
+		AltHandler.InteractHandler = Gun;
 		NewState->Show();
 		Gun->GunState->Show();
 	}else
@@ -74,7 +74,7 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		if(HandlerValid )
 		{
 			MainGun->GunState->Hide();
-			MainHandler = nullptr;
+			MainHandler.InteractHandler = nullptr;
 			if(MainGun == Gun)
 			{
 				return;
@@ -83,14 +83,30 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		if(ALtHandlerValid&& AltGun==Gun)
 		{
 			AltGun->GunState->Hide();
-			AltHandler = nullptr;
+			AltHandler.InteractHandler = nullptr;
 		}
-		UMLeftGunState* NewState = NewObject<UMLeftGunState>();
-		Gun->GunState = NewState;
-		Gun->GunState->SetGun(Gun);
-		NewState->Config();
-		Gun->GunState->Show();
-		MainHandler = Gun;
+		
+		switch (MainHandler.Hand)
+		{
+			case EHand::LEFT:
+				UMLeftGunState* LeftState;
+				LeftState =NewObject<UMLeftGunState>();
+				Gun->GunState = LeftState;
+				Gun->GunState->SetGun(Gun);
+				LeftState->Config();
+				Gun->GunState->Show();
+				break;
+			case EHand::RIGHT:
+				UMRightGunState* RightState;
+				RightState = NewObject<UMRightGunState>();
+				Gun->GunState = RightState;
+				Gun->GunState->SetGun(Gun);
+				RightState->Config();
+				Gun->GunState->Show();
+				break;
+		}
+		
+		MainHandler.InteractHandler = Gun;
 	}
 }
 

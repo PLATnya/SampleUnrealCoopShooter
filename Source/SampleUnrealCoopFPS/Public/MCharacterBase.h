@@ -16,8 +16,19 @@
 #include "MInteractActor.h"
 #include "MCharacterBase.generated.h"
 
-
-
+UENUM()
+enum EHand
+{
+	LEFT,
+	RIGHT
+};
+USTRUCT(BlueprintType)
+struct FHandler
+{
+	GENERATED_BODY()
+	AMInteractActor* InteractHandler;
+	EHand Hand;
+};
 
 UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -63,10 +74,12 @@ public:
 	//UGameplayAbilitySet* AbilitySet;
 	
 	
-	UPROPERTY(BlueprintReadWrite)
-	AMInteractActor* MainHandler;
-	UPROPERTY(BlueprintReadWrite)
-	AMInteractActor* AltHandler;
+	UPROPERTY(BlueprintReadOnly)
+	FHandler MainHandler;
+	//AMInteractActor* MainHandler;
+	UPROPERTY(BlueprintReadOnly)
+	FHandler AltHandler;
+	//AMInteractActor* AltHandler;s
 
 	
 

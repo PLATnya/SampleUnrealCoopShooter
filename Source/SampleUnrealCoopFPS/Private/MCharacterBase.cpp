@@ -10,6 +10,9 @@ AMCharacterBase::AMCharacterBase()
 	
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
+
+	MainHandler.Hand = EHand::LEFT;
+	AltHandler.Hand = EHand::RIGHT;
 }
 
 void AMCharacterBase::BeginPlay()
@@ -86,21 +89,25 @@ void AMCharacterBase::SetHealth(float Health)
 void AMCharacterBase::SwapHandlers()
 {
 	Swap(MainHandler,AltHandler);
+	//Swap(MainHandler.InteractHandler,AltHandler.InteractHandler);
+	/*EHand buff = MainHandler.Hand;
+	MainHandler.Hand = AltHandler.Hand;
+	AltHandler.Hand = buff*/
 }
 
 bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
 {
 	if(InteractActor->TryGet())
 	{
-		const bool LeftHandValid = IsValid(MainHandler);
-		const bool RightHandValid = IsValid(AltHandler);
+		const bool LeftHandValid = IsValid(MainHandler.InteractHandler);
+		const bool RightHandValid = IsValid(AltHandler.InteractHandler);
 		if(InteractActor->bInLeftHand&&InteractActor->bInRightHand)
 		{
 			if(!LeftHandValid&&!RightHandValid)
 			{
 			
-				MainHandler = InteractActor;
-				AltHandler = InteractActor;
+				MainHandler.InteractHandler = InteractActor;
+				AltHandler.InteractHandler = InteractActor;
 				return true;
 			}
 		}else
@@ -108,12 +115,12 @@ bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
 			if(InteractActor->bInRightHand)
 			{
 			
-				AltHandler = InteractActor;
+				AltHandler.InteractHandler = InteractActor;
 				return true;
 			}
 			if(InteractActor->bInLeftHand)
 			{
-				MainHandler = InteractActor;
+				MainHandler.InteractHandler = InteractActor;
 				return true;
 			}
 		}
