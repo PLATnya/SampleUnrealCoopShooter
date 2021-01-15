@@ -37,15 +37,15 @@ public:
 	virtual bool TryGet();
 
 	UFUNCTION(BlueprintCallable,Category="Interact")
-	void SetActive(bool Active);
+	//void SetActive(bool Active);
 	
 	virtual void Tick(float DeltaTime) override;
 
 	
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	bool bInRightHand;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	bool bInLeftHand;
 	
 };

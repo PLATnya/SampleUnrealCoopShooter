@@ -6,16 +6,22 @@
 
 
 
-void UMGunStateInterface::SetGun(AMGunActor* Gun)
+
+
+
+void UMGunStateInterface::SetGun(AMGunActor* NewGun)
 {
-	this->Gun = Gun;
+	Gun = NewGun;
 }
 
-void UMGunStateInterface::Config(AMCharacterBase* Character, const FVector Offset, const FVector OutOffset)
+void UMGunStateInterface::Config(const FVector Offset, const FVector OutOffset)
 {
-	if(Gun->GetParentActor()!=Character) Gun->AttachToActor(Character,FAttachmentTransformRules::KeepWorldTransform);
-	Gun->SetActorLocation(Character->GetActorTransform().TransformPosition(Offset));
+	//if(Gun->GetParentActor()!=Character) Gun->AttachToActor(Character,FAttachmentTransformRules::KeepWorldTransform);
+	
+	 Gun->SetActorRelativeLocation(Offset);
 }
+
+
 
 void UMGunStateInterface::Hide()
 {
@@ -25,24 +31,27 @@ void UMGunStateInterface::Hide()
 void UMGunStateInterface::Show()
 {
 	Gun->SetActive(true);
+	
 }
 
 
 
-void UMLeftGunState::Config( AMCharacterBase* Character)
+void UMLeftGunState::Config(const FVector Offset, const FVector OutOffset)
 {
-	Super::Config(Character, FVector(50,50,50),FVector(50,50,50));
+	Super::Config( Offset,OutOffset);
 }
 
 
 
-void UMRightGunState::Config( AMCharacterBase* Character)
+void UMRightGunState::Config(const FVector Offset, const FVector OutOffset)
 {
-	Super::Config(Character, FVector(-50,50,50),FVector(-50,50,50));
+	Super::Config( Offset,OutOffset);
 }
 
-void UMCenterGunState::Config(AMCharacterBase* Character)
+
+
+void UMCenterGunState::Config(const FVector Offset, const FVector OutOffset)
 {
-	Super::Config(Character, FVector(0,50,50),FVector(0,50,50));
+	Super::Config( Offset,OutOffset);
 }
 

@@ -32,7 +32,7 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	class UMInventoryComponent* Inventory;
 
 
-
+	UFUNCTION(BlueprintCallable,Category="Inventory")
 	void ChangeWeapon(const int32 Index);
 
 

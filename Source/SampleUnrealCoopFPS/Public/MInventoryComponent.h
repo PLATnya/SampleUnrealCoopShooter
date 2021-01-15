@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MGunActor.h"
+
 #include "Components/ActorComponent.h"
 #include "MInventoryComponent.generated.h"
 
@@ -23,13 +24,13 @@ protected:
 
 public:
 	UPROPERTY(BlueprintReadOnly)
-	TSet<AMGunActor*> Guns;
+	TArray<class AMGunActor*> Guns;
 
 	UPROPERTY(BlueprintReadWrite)
 	int32 GunsLimit;
 
-	UFUNCTION(BlueprintCallable)
-	bool TryAdd(AMGunActor* NewGun);
+	UFUNCTION(BlueprintCallable,Category="Inventory")
+	bool TryAddGun(AMGunActor* NewGun, AActor* Owner);
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;

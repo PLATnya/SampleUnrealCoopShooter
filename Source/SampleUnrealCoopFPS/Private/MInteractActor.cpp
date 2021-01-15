@@ -27,13 +27,24 @@ bool AMInteractActor::TryGet()
 	}
 	return false;
 }
-
+/*
 void AMInteractActor::SetActive(bool Active)
 {
-	SetActorHiddenInGame(!Active);
-	SetActorEnableCollision(Active);
-	SetActorTickEnabled(Active);
-}
+	
+	//this->SetActorHiddenInGame(!Active);
+	try
+	{
+		SetActorEnableCollision(Active);
+		const bool bInverse = !Active;
+		SetActorHiddenInGame(bInverse);
+		SetActorTickEnabled(Active);
+	}catch (std::exception& ex)
+	{
+		
+		UE_LOG(LogTemp,Warning,TEXT("%s"),ex.what());
+	}
+	
+}*/
 
 // Called every frame
 void AMInteractActor::Tick(float DeltaTime)

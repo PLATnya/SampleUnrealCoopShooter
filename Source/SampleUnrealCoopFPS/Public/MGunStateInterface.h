@@ -7,18 +7,26 @@
 
 
 
-class UMGunStateInterface;
+
 UCLASS()
 class UMGunStateInterface : public UObject
 {
 	GENERATED_BODY()
-	AMGunActor* Gun;
-public:
-	virtual void SetGun(AMGunActor* Gun);
 	
-	void Config( AMCharacterBase* Character, const FVector Offset, const FVector OutOffset);
-	virtual void Hide();
-	virtual void Show();
+public:
+	UFUNCTION()
+	void SetGun(AMGunActor* NewGun);
+	UPROPERTY(EditAnywhere)
+	AMGunActor* Gun;
+
+	
+	UFUNCTION()
+	virtual void Config(const FVector Offset , const FVector OutOffset);
+	
+	UFUNCTION(BlueprintCallable)
+    void Hide();
+	UFUNCTION(BlueprintCallable)
+	void Show();
 	
 };
 
@@ -27,20 +35,28 @@ UCLASS()
 class SAMPLEUNREALCOOPFPS_API UMLeftGunState: public UMGunStateInterface{
 	GENERATED_BODY()
 	public:
-	void Config( AMCharacterBase* Character);
+	
+	
+   virtual void Config(const FVector Offset = FVector(70,-50,50) , const FVector OutOffset = FVector(70,-50,50));
+
+	
 };
 
 UCLASS()
 class SAMPLEUNREALCOOPFPS_API UMRightGunState:public UMGunStateInterface{
 	GENERATED_BODY()
 	public:
-	void Config( AMCharacterBase* Character);
-
+	
+	
+    virtual void Config(const FVector Offset = FVector(70,-50,50) , const FVector OutOffset =FVector(70,-50,50));
+	
 };
 UCLASS()
 class SAMPLEUNREALCOOPFPS_API UMCenterGunState:public UMGunStateInterface{
 	GENERATED_BODY()
 	public:
-	void Config( AMCharacterBase* Character);
-
+	
+	
+   virtual void Config(const FVector Offset = FVector(70,0,50) , const FVector OutOffset = FVector(70,-50,50));
+	
 };

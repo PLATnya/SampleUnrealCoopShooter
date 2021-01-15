@@ -129,7 +129,7 @@ float AMCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	SetHealth(FMath::Clamp(GetHealth() - ActualDamage, 0.0f,GetMaxHealth()));
 	
-	UE_LOG(LogTemp,Display,TEXT("%s take %f damage from %s"),*GetNameSafe(this), ActualDamage, *GetNameSafe(DamageCauser) );
+	//UE_LOG(LogTemp,Display,TEXT("%s take %f damage from %s"),*GetNameSafe(this), ActualDamage, *GetNameSafe(DamageCauser) );
 	return ActualDamage;
 }
 

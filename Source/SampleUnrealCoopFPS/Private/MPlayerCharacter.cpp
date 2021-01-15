@@ -36,46 +36,59 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {
+
+	AMGunActor* Gun = Inventory->Guns[Index];
+	UE_LOG(LogTemp,Display,TEXT("new gun is: %s"),*GetNameSafe(Gun));
 	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler);
-	if(!MainGun) return;
-	if(Index>=Inventory->Guns.Num()) return;
-	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler);
-	
-	FSetElementId SetIndex;
-	AMGunActor* Gun = Inventory->Guns[SetIndex.FromInteger(Index)];
+	if(Index>=Inventory->Guns.Num())
+		return;
+
 	const bool bTwoHanded = Gun->bInLeftHand&&Gun->bInRightHand;
+	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler);
 	const bool HandlerValid = IsValid(MainGun);
 	const bool ALtHandlerValid = IsValid(AltGun);
 	if(bTwoHanded)
 	{
-		
-		if(MainGun == Gun)
+		if(HandlerValid)
 		{
 			MainGun->GunState->Hide();
 			MainHandler = nullptr;
-			AltHandler = nullptr;
-			return;
+			
+			if(MainGun == Gun)
+			{
+				AltHandler = nullptr;
+				return;
+			}
 		}
-		if(HandlerValid) MainGun->GunState->Hide();
 		if(ALtHandlerValid) AltGun->GunState->Hide();
-		Gun->GunState = NewObject<UMCenterGunState>();
+		AltHandler = nullptr;
+		UMCenterGunState* NewState = NewObject<UMCenterGunState>();
+		Gun->GunState = NewState;
+		Gun->GunState->SetGun(Gun);
 		MainHandler = Gun;
 		AltHandler = Gun;
+		NewState->Show();
 		Gun->GunState->Show();
 	}else
 	{
-		if(MainGun == Gun)
+		if(HandlerValid )
 		{
 			MainGun->GunState->Hide();
 			MainHandler = nullptr;
-			return;
+			if(MainGun == Gun)
+			{
+				return;
+			}
 		}
-		if(AltGun==Gun)
+		if(ALtHandlerValid&& AltGun==Gun)
 		{
 			AltGun->GunState->Hide();
 			AltHandler = nullptr;
 		}
-		Gun->GunState = NewObject<UMLeftGunState>();
+		UMLeftGunState* NewState = NewObject<UMLeftGunState>();
+		Gun->GunState = NewState;
+		Gun->GunState->SetGun(Gun);
+		NewState->Config();
 		Gun->GunState->Show();
 		MainHandler = Gun;
 	}

@@ -10,7 +10,7 @@ UMInventoryComponent::UMInventoryComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	
+	GunsLimit = 5;
 	// ...
 }
 
@@ -25,12 +25,22 @@ void UMInventoryComponent::BeginPlay()
 }
 
 
-bool UMInventoryComponent::TryAdd(AMGunActor* NewGun)
+bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun, AActor* Owner)
 {
 	if(Guns.Num()>=GunsLimit) return false;
 	
-	if(Guns.Add(NewGun).IsValidId()) return true;
-	return false;
+	Guns.Add(NewGun);
+	NewGun->AttachTo(Owner);
+	
+	if(!NewGun->GunState)
+	{
+		UMLeftGunState* NewState = NewObject<UMLeftGunState>();
+		NewGun->GunState = NewState;
+		NewGun->GunState->SetGun(NewGun);
+		NewState->Config();
+	}
+	NewGun->GunState->Hide();
+	return true;
 }
 
 // Called every frame
