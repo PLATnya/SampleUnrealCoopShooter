@@ -36,7 +36,7 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {
-
+	
 	AMGunActor* Gun = Inventory->Guns[Index];
 	UE_LOG(LogTemp,Display,TEXT("new gun is: %s"),*GetNameSafe(Gun));
 	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler.InteractHandler);

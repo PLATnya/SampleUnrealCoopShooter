@@ -89,44 +89,9 @@ void AMCharacterBase::SetHealth(float Health)
 void AMCharacterBase::SwapHandlers()
 {
 	Swap(MainHandler,AltHandler);
-	//Swap(MainHandler.InteractHandler,AltHandler.InteractHandler);
-	/*EHand buff = MainHandler.Hand;
-	MainHandler.Hand = AltHandler.Hand;
-	AltHandler.Hand = buff*/
+
 }
 
-bool AMCharacterBase::GetInHand(AMInteractActor* InteractActor)
-{
-	if(InteractActor->TryGet())
-	{
-		const bool LeftHandValid = IsValid(MainHandler.InteractHandler);
-		const bool RightHandValid = IsValid(AltHandler.InteractHandler);
-		if(InteractActor->bInLeftHand&&InteractActor->bInRightHand)
-		{
-			if(!LeftHandValid&&!RightHandValid)
-			{
-			
-				MainHandler.InteractHandler = InteractActor;
-				AltHandler.InteractHandler = InteractActor;
-				return true;
-			}
-		}else
-		{
-			if(InteractActor->bInRightHand)
-			{
-			
-				AltHandler.InteractHandler = InteractActor;
-				return true;
-			}
-			if(InteractActor->bInLeftHand)
-			{
-				MainHandler.InteractHandler = InteractActor;
-				return true;
-			}
-		}
-	}
-	return false;
-}
 
 
 float AMCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

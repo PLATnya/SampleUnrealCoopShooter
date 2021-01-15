@@ -26,7 +26,8 @@ USTRUCT(BlueprintType)
 struct FHandler
 {
 	GENERATED_BODY()
-	AMInteractActor* InteractHandler;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AMInteractActor* InteractHandler;
 	EHand Hand;
 };
 
@@ -87,8 +88,8 @@ public:
 	void SwapHandlers();
 	
 	
-	UFUNCTION(BlueprintCallable)
-	bool GetInHand(AMInteractActor* InteractActor);
+	//UFUNCTION(BlueprintCallable)
+	//bool GetInHand(AMInteractActor* InteractActor);
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 };

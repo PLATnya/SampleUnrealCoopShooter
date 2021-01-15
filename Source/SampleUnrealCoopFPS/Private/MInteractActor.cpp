@@ -18,14 +18,20 @@ void AMInteractActor::BeginPlay()
 	
 }
 
-bool AMInteractActor::TryGet()
+bool AMInteractActor::TryGet(AActor* Parent )
 {
 	if(UsersCount< UsersLimit)
 	{
 		UsersCount++;
+
+		if(Parent) AttachTo(Parent);
 		return true;
 	}
 	return false;
+}
+void AMInteractActor::AttachTo(AActor* Parent)
+{
+	AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 /*
 void AMInteractActor::SetActive(bool Active)
@@ -45,6 +51,15 @@ void AMInteractActor::SetActive(bool Active)
 	}
 	
 }*/
+
+void AMInteractActor::SetActive(bool Active)
+{
+	SetActorEnableCollision(Active);
+	
+	
+	SetActorHiddenInGame(!Active);
+	SetActorTickEnabled(Active);
+}
 
 // Called every frame
 void AMInteractActor::Tick(float DeltaTime)

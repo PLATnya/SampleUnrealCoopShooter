@@ -34,13 +34,13 @@ public:
 	int32 UsersLimit;
 
 	UFUNCTION(BlueprintCallable, Category="Interact")
-	virtual bool TryGet();
+	virtual bool TryGet(AActor* Parent = nullptr);
 
 	UFUNCTION(BlueprintCallable,Category="Interact")
-	//void SetActive(bool Active);
+	virtual void SetActive(bool Active) ;
 	
 	virtual void Tick(float DeltaTime) override;
-
+	void AttachTo(AActor* Parent);
 	
 	
 	UPROPERTY(BlueprintReadWrite)

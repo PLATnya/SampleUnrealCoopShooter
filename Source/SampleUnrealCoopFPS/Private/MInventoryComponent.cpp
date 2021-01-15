@@ -27,11 +27,10 @@ void UMInventoryComponent::BeginPlay()
 
 bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun, AActor* Owner)
 {
+	if(!NewGun->TryGet(Owner)) return false; 
 	if(Guns.Num()>=GunsLimit) return false;
-	
+
 	Guns.Add(NewGun);
-	NewGun->AttachTo(Owner);
-	
 	if(!NewGun->GunState)
 	{
 		UMLeftGunState* NewState = NewObject<UMLeftGunState>();

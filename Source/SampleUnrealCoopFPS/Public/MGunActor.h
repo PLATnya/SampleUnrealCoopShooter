@@ -33,12 +33,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void SetActive(bool Active) ;
-	
 	class UMGunStateInterface *GunState;
-
-
-	void AttachTo(AActor* Parent);
+	
 	
 	virtual void Tick(float DeltaTime) override;
 };

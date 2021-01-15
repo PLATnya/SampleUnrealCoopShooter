@@ -19,20 +19,9 @@ void AMGunActor::BeginPlay()
 	GunState->SetGun(this);
 }
 
-void AMGunActor::SetActive(bool Active)
-{
-	SetActorEnableCollision(Active);
-	
-	
-	SetActorHiddenInGame(!Active);
-	SetActorTickEnabled(Active);
-}
 
 
-void AMGunActor::AttachTo(AActor* Parent)
-{
-	AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
-}
+
 
 void AMGunActor::Tick(float DeltaTime)
 {
