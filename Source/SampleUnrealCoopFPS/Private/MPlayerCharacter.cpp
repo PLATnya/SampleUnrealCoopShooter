@@ -36,12 +36,12 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {
-	
+	if(Index>=Inventory->Guns.Num())
+		return;
 	AMGunActor* Gun = Inventory->Guns[Index];
 	UE_LOG(LogTemp,Display,TEXT("new gun is: %s"),*GetNameSafe(Gun));
 	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler.InteractHandler);
-	if(Index>=Inventory->Guns.Num())
-		return;
+	
 
 	const bool bTwoHanded = Gun->bInLeftHand&&Gun->bInRightHand;
 	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler.InteractHandler);
