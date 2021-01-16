@@ -31,6 +31,7 @@ bool AMInteractActor::TryGet(AActor* Parent )
 }
 void AMInteractActor::AttachTo(AActor* Parent)
 {
+	SetOwner(Parent);
 	AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 /*

@@ -6,6 +6,7 @@
 #include "MGunActor.h"
 
 #include "Components/ActorComponent.h"
+#include "MAttributeSetInventory.h"
 #include "MInventoryComponent.generated.h"
 
 
@@ -23,6 +24,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities | Attributes", meta = (AllowPrivateAccess = "true"))
+	class UMAttributeSetInventory* AmmoAttributeSet;
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class AMGunActor*> Guns;
 
@@ -30,7 +34,7 @@ public:
 	int32 GunsLimit;
 
 	UFUNCTION(BlueprintCallable,Category="Inventory")
-	bool TryAddGun(AMGunActor* NewGun, AActor* Owner);
+	bool TryAddGun(AMGunActor* NewGun, AMCharacterBase* Owner);
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;

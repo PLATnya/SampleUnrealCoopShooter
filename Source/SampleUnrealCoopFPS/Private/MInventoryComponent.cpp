@@ -25,15 +25,17 @@ void UMInventoryComponent::BeginPlay()
 }
 
 
-bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun, AActor* Owner)
+bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun, AMCharacterBase* Owner)
 {
 	if(!NewGun->TryGet(Owner)) return false; 
 	if(Guns.Num()>=GunsLimit) return false;
 
 	Guns.Add(NewGun);
+	NewGun->SetAbilitySystemComponent(Owner->GetAbilitySystemComponent());
+	NewGun->AddAbilities();
 	if(!NewGun->GunState)
 	{
-		UMLeftGunState* NewState = NewObject<UMLeftGunState>();
+		UMCenterGunState* NewState = NewObject<UMCenterGunState>();
 		NewGun->GunState = NewState;
 		NewGun->GunState->SetGun(NewGun);
 		NewState->Config();
