@@ -3,3 +3,8 @@
 
 #include "MAttributeSetInventory.h"
 
+UMAttributeSetInventory::UMAttributeSetInventory()
+{
+	ReserveAvtoAmmo = 50;
+	ReservePistolAmmo = 20;
+}

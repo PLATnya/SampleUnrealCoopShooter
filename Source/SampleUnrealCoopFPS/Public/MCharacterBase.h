@@ -11,6 +11,9 @@
 #include "AbilitySystemInterface.h"
 #include "MAttributeSetCharacter.h"
 
+
+#include "MAttributeSetInventory.h"
+
 #include "GameplayAbilitySet.h"
 
 #include "MInteractActor.h"

@@ -6,7 +6,7 @@
 #include "MGunActor.h"
 
 #include "Components/ActorComponent.h"
-#include "MAttributeSetInventory.h"
+
 #include "MInventoryComponent.generated.h"
 
 
@@ -24,9 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities | Attributes", meta = (AllowPrivateAccess = "true"))
-	class UMAttributeSetInventory* AmmoAttributeSet;
+	
+	
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class AMGunActor*> Guns;
 

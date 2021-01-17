@@ -21,10 +21,10 @@ class SAMPLEUNREALCOOPFPS_API UMAttributeSetInventory : public UAttributeSet
 
 	public:
 	UMAttributeSetInventory();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest", meta = (HideFromModifiers))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest")
 	FGameplayAttributeData ReservePistolAmmo;
 	ATTRIBUTE_ACCESSORS(UMAttributeSetInventory, ReserveAvtoAmmo);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest", meta = (HideFromModifiers))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest")
 	FGameplayAttributeData ReserveAvtoAmmo;
 	ATTRIBUTE_ACCESSORS(UMAttributeSetInventory, ReservePistolAmmo);
 	

@@ -3,6 +3,8 @@
 
 #include "SampleUnrealCoopFPS/Public/MInventoryComponent.h"
 
+#include "ComponentUtils.h"
+
 
 // Sets default values for this component's properties
 UMInventoryComponent::UMInventoryComponent()
@@ -11,6 +13,9 @@ UMInventoryComponent::UMInventoryComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	GunsLimit = 5;
+	
+
+	
 	// ...
 }
 
@@ -19,7 +24,9 @@ UMInventoryComponent::UMInventoryComponent()
 void UMInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	AMCharacterBase* Owner = Cast<AMCharacterBase>(GetOwner());
+	
+	//Owner->AltAttributeSets.Add(CreateDefaultSubobject<UMAttributeSetInventory>(TEXT("AmmoAttributeSet")));
 	// ...
 	
 }

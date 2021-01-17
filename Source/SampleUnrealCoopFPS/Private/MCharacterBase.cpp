@@ -11,6 +11,8 @@ AMCharacterBase::AMCharacterBase()
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
 
+	
+	
 	MainHandler.Hand = EHand::LEFT;
 	AltHandler.Hand = EHand::RIGHT;
 }
@@ -18,7 +20,9 @@ AMCharacterBase::AMCharacterBase()
 void AMCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	AddCharacterAbilities(); 
+	AddCharacterAbilities();
+	
+	
  }
 
 

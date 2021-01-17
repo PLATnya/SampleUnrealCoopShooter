@@ -21,11 +21,11 @@ class SAMPLEUNREALCOOPFPS_API UMAttributeSetCharacter : public UAttributeSet
 	GENERATED_BODY()
 	public:
 	UMAttributeSetCharacter();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest", meta = (HideFromModifiers))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest")
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UMAttributeSetCharacter, Health)
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest", meta = (HideFromModifiers))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttributeTest")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UMAttributeSetCharacter, MaxHealth)
 };

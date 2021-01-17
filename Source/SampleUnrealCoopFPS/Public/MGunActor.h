@@ -13,17 +13,6 @@
 
 #include "MGunActor.generated.h"
 
-
-
-
-
-
-
-
-
-
-
-
 UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMGunActor : public AMInteractActor,  public IAbilitySystemInterface
 {
@@ -47,8 +36,9 @@ public:
 	UPROPERTY()
 	class UMGunStateInterface *GunState;
 
-
+	UPROPERTY()
 	int32 MaxClipCount;
+	UPROPERTY()
 	int32 ClipCount;
 
 	FName GunTypeName;
@@ -65,6 +55,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS|Weapon")
 	FGameplayTag AmmoType;
 
+	UFUNCTION(BlueprintCallable,BlueprintPure, Category="Weapon")
+	int32 GetClipCount ();
+	UFUNCTION(BlueprintCallable,BlueprintPure, Category="Weapon")
+	int32 GetMaxClipCount();
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	void SetClipCount(int32 Count);
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+    void SetMaxClipCount(int32 Count);
 	
 	//reload - AddCount = Clamp(reserve_ammo,0,MaxClipCount - ClipCount) 
 	//ClipCount += AddCount

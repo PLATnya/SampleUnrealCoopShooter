@@ -23,6 +23,8 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	virtual void BeginPlay() override;
 
 	public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities | Attributes", meta = (AllowPrivateAccess = "true"))
+	class UMAttributeSetInventory* AmmoAttributeSet;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input

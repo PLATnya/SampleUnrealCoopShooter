@@ -20,8 +20,25 @@ void AMGunActor::BeginPlay()
 }
 
 
+int32 AMGunActor::GetClipCount()
+{
+	return ClipCount;
+}
 
+int32 AMGunActor::GetMaxClipCount()
+{
+	return MaxClipCount;
+}
 
+void AMGunActor::SetClipCount(int32 Count)
+{
+	ClipCount = Count;
+}
+
+void AMGunActor::SetMaxClipCount(int32 Count)
+{
+	MaxClipCount = Count;
+}
 
 void AMGunActor::Tick(float DeltaTime)
 {
