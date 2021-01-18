@@ -9,7 +9,6 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayAbilitySpec.h"
 #include "GameplayTagContainer.h"
-#include "AbilitySystemComponent.h"
 
 #include "MGunActor.generated.h"
 
@@ -17,44 +16,28 @@ UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMGunActor : public AMInteractActor,  public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-
-public:
-	
-	AMGunActor();
-
-protected:
-	
-	UAbilitySystemComponent* AbilitySystemComponent;
-	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, Category = "GAS")
-	TArray<TSubclassOf<UGameplayAbility>> Abilities;
-
-	UPROPERTY(BlueprintReadOnly, Category = "GAS")
-	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
-
-public:
-	UPROPERTY()
-	class UMGunStateInterface *GunState;
-
 	UPROPERTY()
 	int32 MaxClipCount;
 	UPROPERTY()
 	int32 ClipCount;
-
-	FName GunTypeName;
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS|Weapon")
-	FGameplayTag WeaponTag;
-
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS|Weapon")
-	FGameplayTag ShootTag;
-
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS|Weapon")
-	FGameplayTag ReloadTag;
 	
+	UPROPERTY()
+	UAbilitySystemComponent* AbilitySystemComponent;
+protected:
 	
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS|Weapon")
-	FGameplayTag AmmoType;
+	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	TArray<TSubclassOf<UGameplayAbility>> Abilities;
+	UPROPERTY(BlueprintReadOnly, Category = "GAS")
+	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
+	
+public:
+	AMGunActor();
 
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS|Weapon")
+	TMap<FName,FGameplayTag> WeaponTagsMap;
+	UPROPERTY(BlueprintReadWrite)
+	class UMGunStateInterface *GunState;
+	
 	UFUNCTION(BlueprintCallable,BlueprintPure, Category="Weapon")
 	int32 GetClipCount ();
 	UFUNCTION(BlueprintCallable,BlueprintPure, Category="Weapon")
@@ -63,15 +46,15 @@ public:
 	void SetClipCount(int32 Count);
 	UFUNCTION(BlueprintCallable, Category="Weapon")
     void SetMaxClipCount(int32 Count);
-	
-	//reload - AddCount = Clamp(reserve_ammo,0,MaxClipCount - ClipCount) 
-	//ClipCount += AddCount
-	//ReserveAmmo -= AddCount
-	
-	virtual void Tick(float DeltaTime) override;
-	
+
+	virtual bool TryGet(AActor* Parent = nullptr) override;
+	virtual bool TryDrop() override;
+	UFUNCTION(BlueprintCallable, Category = "GAS")
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UFUNCTION(BlueprintCallable, Category = "GAS")
 	void SetAbilitySystemComponent(UAbilitySystemComponent* Asc);
+	UFUNCTION(BlueprintCallable, Category= "GAS")
 	void AddAbilities();
+	UFUNCTION(BlueprintCallable, Category= "GAS")
 	void RemoveAbilities();
 };

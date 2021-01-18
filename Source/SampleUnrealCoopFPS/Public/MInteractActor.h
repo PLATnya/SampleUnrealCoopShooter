@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 
-#include "MCharacterBase.h"
 #include "GameFramework/Actor.h"
 #include "MInteractActor.generated.h"
 
@@ -16,36 +15,21 @@ UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMInteractActor : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this actor's properties
-	AMInteractActor();
-
 protected:
-	
-	
 	int32 UsersCount;
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:
-	
 	UPROPERTY(BlueprintReadWrite)
 	int32 UsersLimit;
+public:
+	AMInteractActor();
 
+	UPROPERTY(BlueprintReadWrite)
+	bool bTwoHanded;
+	
+	
 	UFUNCTION(BlueprintCallable, Category="Interact")
 	virtual bool TryGet(AActor* Parent = nullptr);
-
+	UFUNCTION(BlueprintCallable, Category="Interact")
+	virtual bool TryDrop();
 	UFUNCTION(BlueprintCallable,Category="Interact")
-	virtual void SetActive(bool Active) ;
-	
-	virtual void Tick(float DeltaTime) override;
-	void AttachTo(AActor* Parent);
-	
-	
-	UPROPERTY(BlueprintReadWrite)
-	bool bInRightHand;
-	UPROPERTY(BlueprintReadWrite)
-	bool bInLeftHand;
-	
+	virtual void SetActive(bool Active) ;	
 };

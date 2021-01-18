@@ -1,118 +1,138 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "MPlayerCharacter.h"
+
 AMPlayerCharacter::AMPlayerCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	Inventory = CreateDefaultSubobject<UMInventoryComponent>("InventoryOfGuns");
 	AmmoAttributeSet = CreateDefaultSubobject<UMAttributeSetInventory>("AmmoAttributeSet");
 }
 
-// Called when the game starts or when spawned
-void AMPlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AMPlayerCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-
-void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMPlayerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMPlayerCharacter::MoveRight);
-
-	PlayerInputComponent->BindAxis("LookUp", this, &AMPlayerCharacter::LookUp);
-	PlayerInputComponent->BindAxis("Turn", this, &AMPlayerCharacter::Turn);
-	
-}
 
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {
 	if(Index>=Inventory->Guns.Num())
 		return;
 	FGameplayTagContainer AbilityTagsToCancel;
-	
-	//FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Weapon")));
-	//AbilityTagsToCancel.AddTag()
-	 
-	
-	
 	AMGunActor* Gun = Inventory->Guns[Index];
-	UE_LOG(LogTemp,Display,TEXT("new gun is: %s"),*GetNameSafe(Gun));
 	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler.InteractHandler);
 	
-
-	const bool bTwoHanded = Gun->bInLeftHand&&Gun->bInRightHand;
 	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler.InteractHandler);
 	const bool HandlerValid = IsValid(MainGun);
+	const bool AltHandlerValid = IsValid(AltGun);
+
+	if(HandlerValid)
+	{
+		MainGun->GunState->Hide();
+		MainHandler.InteractHandler = nullptr;
+		
+		AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
+	}
+	if(Gun!=MainGun)
+	{
+		if(Gun == AltGun)
+		{
+			AltHandler.InteractHandler = nullptr;
+		}else
+		{
+			MainHandler.InteractHandler = Gun;
+		}
+	}
+	if(Gun->bTwoHanded)
+	{
+		if(AltHandlerValid)
+		{
+			AltGun->GunState->Hide();
+			AltHandler.InteractHandler = nullptr;
+			AbilityTagsToCancel.AddTag(AltGun->WeaponTagsMap["WeaponTag"]);
+			if(Gun!=MainGun)
+			{
+				AltHandler.InteractHandler = Gun;
+			}
+		}
+		Gun->GunState = NewObject<UMCenterGunState>();
+		Gun->GunState->SetGun(Gun);
+		Gun->GunState->Config();
+		Gun->GunState->Show();
+	}else
+	{
+		if(Gun!=MainGun)
+		{
+			switch (MainHandler.Hand)
+			{
+			case EHand::LEFT:
+				Gun->GunState = NewObject<UMLeftGunState>();
+				break;
+			case EHand::RIGHT:
+				Gun->GunState = NewObject<UMRightGunState>();
+				break;
+			}
+			Gun->GunState->SetGun(Gun);
+			Gun->GunState->Config();
+			Gun->GunState->Show();
+		}
+	}
+	
+}
+
+void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMPlayerCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AMPlayerCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("LookUp", this, &AMPlayerCharacter::LookUp);
+	PlayerInputComponent->BindAxis("Turn", this, &AMPlayerCharacter::Turn);
+}
+/*
+void AMPlayerCharacter::ChangeWeapon2(const int32 Index)
+{
+	if(Index>=Inventory->Guns.Num())
+		return;
+	FGameplayTagContainer AbilityTagsToCancel;
+	AMGunActor* Gun = Inventory->Guns[Index];
+	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler.GetHandler());
+	
+	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler.GetHandler());
+	const bool HandlerValid = IsValid(MainGun);
 	const bool ALtHandlerValid = IsValid(AltGun);
-	if(bTwoHanded)
+	if(Gun->bTwoHanded)
 	{
 		if(MainGun == Gun)
 		{
 			if(HandlerValid)
 			{
 				MainGun->GunState->Hide();
-				AbilityTagsToCancel.AddTag(MainGun->WeaponTag);
-				MainHandler.InteractHandler = nullptr;
-				AltHandler.InteractHandler = nullptr;
-				AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel);
+				AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
+				MainHandler.SetOrClearHandler();
+				AltHandler.SetOrClearHandler();
+				GetAbilitySystemComponent()->CancelAbilities(&AbilityTagsToCancel);
 			}
 			
 		}else{
 			if(HandlerValid)
 			{
 				MainGun->GunState->Hide();
-				AbilityTagsToCancel.AddTag(MainGun->WeaponTag);
-				MainHandler.InteractHandler = nullptr;
+				AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
+				MainHandler.SetOrClearHandler();
 			}
 			if(ALtHandlerValid)
 			{
 				AltGun->GunState->Hide();
-				AbilityTagsToCancel.AddTag(AltGun->WeaponTag);
+				AbilityTagsToCancel.AddTag(AltGun->WeaponTagsMap["WeaponTag"]);
 			}
-			AltHandler.InteractHandler = nullptr;
-			AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel);
-			UMCenterGunState* NewState = NewObject<UMCenterGunState>();
-			Gun->GunState = NewState;
+			AltHandler.SetOrClearHandler();
+			GetAbilitySystemComponent()->CancelAbilities(&AbilityTagsToCancel);
+			
+			Gun->GunState = NewObject<UMCenterGunState>();
 			Gun->GunState->SetGun(Gun);
-			MainHandler.InteractHandler = Gun;
-			AltHandler.InteractHandler = Gun;
-			NewState->Show();
+			MainHandler.SetOrClearHandler(Gun);
+			AltHandler.SetOrClearHandler(Gun);
+			Gun->GunState->Show();
 			Gun->GunState->Show();
 		}
 		
 
-		/*
-		if(HandlerValid)
-		{
-			MainGun->GunState->Hide();
-			MainHandler.InteractHandler = nullptr;
-			
-			if(MainGun == Gun)
-			{
-				AltHandler.InteractHandler = nullptr;
-				return;
-			}
-		}
-		if(ALtHandlerValid) AltGun->GunState->Hide();
-		AltHandler.InteractHandler = nullptr;
-		UMCenterGunState* NewState = NewObject<UMCenterGunState>();
-		Gun->GunState = NewState;
-		Gun->GunState->SetGun(Gun);
-		MainHandler.InteractHandler = Gun;
-		AltHandler.InteractHandler = Gun;
-		NewState->Show();
-		Gun->GunState->Show();*/
+		
 	}else
 	{
 		
@@ -121,87 +141,49 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 			if(HandlerValid )
 			{
 				MainGun->GunState->Hide();
-				AbilityTagsToCancel.AddTag(MainGun->WeaponTag);
-				MainHandler.InteractHandler = nullptr;
+				AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
+				MainHandler.SetOrClearHandler();
 			}
 			if(ALtHandlerValid&& AltGun==Gun)
 			{
 				AltGun->GunState->Hide();
-				AbilityTagsToCancel.AddTag(AltGun->WeaponTag);
-				AltHandler.InteractHandler = nullptr;
+				AbilityTagsToCancel.AddTag(AltGun->WeaponTagsMap["WeaponTag"]);
+				AltHandler.SetOrClearHandler();
 			}
-			AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel);
+			GetAbilitySystemComponent()->CancelAbilities(&AbilityTagsToCancel);
 			switch (MainHandler.Hand)
 			{
 			case EHand::LEFT:
-				UMLeftGunState* LeftState;
-				LeftState =NewObject<UMLeftGunState>();
-				Gun->GunState = LeftState;
+				Gun->GunState =NewObject<UMLeftGunState>();
 				Gun->GunState->SetGun(Gun);
-				LeftState->Config();
+				Gun->GunState->Config();
 				Gun->GunState->Show();
 				break;
 			case EHand::RIGHT:
-				UMRightGunState* RightState;
-				RightState = NewObject<UMRightGunState>();
-				Gun->GunState = RightState;
+				Gun->GunState =NewObject<UMRightGunState>();
 				Gun->GunState->SetGun(Gun);
-				RightState->Config();
+				Gun->GunState->Config();
 				Gun->GunState->Show();
 				break;
 			}
 		
-			MainHandler.InteractHandler = Gun;
+			MainHandler.SetOrClearHandler(Gun);
 		}else if(MainGun == Gun&&HandlerValid)
 		{
-			AbilityTagsToCancel.AddTag(MainGun->WeaponTag);
+			AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
 
 			
-			AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel);
+			GetAbilitySystemComponent()->CancelAbilities(&AbilityTagsToCancel);
 			MainGun->GunState->Hide();
-			MainHandler.InteractHandler = nullptr;
+			MainHandler.SetOrClearHandler();
 		
 		}
 		
-		/*
-		if(HandlerValid )
-		{
-			MainGun->GunState->Hide();
-			MainHandler.InteractHandler = nullptr;
-			if(MainGun == Gun)
-			{
-				return;
-			}
-		}
-		if(ALtHandlerValid&& AltGun==Gun)
-		{
-			AltGun->GunState->Hide();
-			AltHandler.InteractHandler = nullptr;
-		}
 		
-		switch (MainHandler.Hand)
-		{
-			case EHand::LEFT:
-				UMLeftGunState* LeftState;
-				LeftState =NewObject<UMLeftGunState>();
-				Gun->GunState = LeftState;
-				Gun->GunState->SetGun(Gun);
-				LeftState->Config();
-				Gun->GunState->Show();
-				break;
-			case EHand::RIGHT:
-				UMRightGunState* RightState;
-				RightState = NewObject<UMRightGunState>();
-				Gun->GunState = RightState;
-				Gun->GunState->SetGun(Gun);
-				RightState->Config();
-				Gun->GunState->Show();
-				break;
-		}
-		
-		MainHandler.InteractHandler = Gun;*/
 	}
 }
+*/
+
 
 
 

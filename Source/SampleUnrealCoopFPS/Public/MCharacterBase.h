@@ -1,21 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
-
 #include "CoreMinimal.h"
-
-#include <activation.h>
-
 #include "GameFramework/Character.h"
-#include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "MAttributeSetCharacter.h"
-
-
-#include "MAttributeSetInventory.h"
-
 #include "GameplayAbilitySet.h"
-
 #include "MInteractActor.h"
 #include "MCharacterBase.generated.h"
 
@@ -25,12 +13,14 @@ enum EHand
 	LEFT,
 	RIGHT
 };
+
 USTRUCT(BlueprintType)
 struct FHandler
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class AMInteractActor* InteractHandler;
+	
+	UPROPERTY(BlueprintReadWrite)
+	AMInteractActor* InteractHandler;
 	EHand Hand;
 };
 
@@ -38,61 +28,37 @@ UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-
-
-
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY()
+	class UAbilitySystemComponent* AbilitySystemComponent;
+	UPROPERTY()
+	class UMAttributeSetCharacter* AttributeSet;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 protected:
 	virtual void BeginPlay() override;
-
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "MCharacter|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 public:	
-   	
-    
-   	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
-   	class UAbilitySystemComponent* AbilitySystemComponent;
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities | Attributes", meta = (AllowPrivateAccess = "true"))
-    class UMAttributeSetCharacter* AttributeSet;
-	
-	
 	AMCharacterBase();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	virtual void Tick(float DeltaTime) override;
-	
-	
-	// Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
-	
-	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
+	UFUNCTION(BlueprintCallable)
 	virtual void AddCharacterAbilities();
 
-	UFUNCTION(BlueprintCallable, Category = "MCharacter")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MCharacter")
     virtual bool IsAlive() const;
-	UFUNCTION(BlueprintCallable, Category = "MCharacter|Attributes")
-	float GetHealth() const;
-	UFUNCTION(BlueprintCallable, Category = "MCharacter|Attributes")
+	UFUNCTION(BlueprintCallable, BlueprintPure,Category = "MCharacter|Attributes")
+	float GetHealth() const; 
+	UFUNCTION(BlueprintCallable,BlueprintPure, Category = "MCharacter|Attributes")
     float GetMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "MCharacter|Attributes")
 	virtual void SetHealth(float Health);
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "MCharacter|Abilities")
-	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
-
-	
-	//UGameplayAbilitySet* AbilitySet;
-	
+	UFUNCTION(BlueprintCallable)
+    void SwapHandlers();
 	
 	UPROPERTY(BlueprintReadOnly)
 	FHandler MainHandler;
-	//AMInteractActor* MainHandler;
 	UPROPERTY(BlueprintReadOnly)
-	FHandler AltHandler;
-	//AMInteractActor* AltHandler;s
-
-	
-
-	UFUNCTION(BlueprintCallable)
-	void SwapHandlers();
-	
-	
-	//UFUNCTION(BlueprintCallable)
-	//bool GetInHand(AMInteractActor* InteractActor);
-
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	FHandler AltHandler;	
 };
