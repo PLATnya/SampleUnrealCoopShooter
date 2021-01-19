@@ -1,7 +1,7 @@
 ﻿
 #include "MGunStateInterface.h"
 
-#include "ComponentUtils.h"
+
 
 void UMGunStateInterface::SetGun(AMInteractActor* NewGun)
 {
@@ -15,7 +15,8 @@ AMInteractActor* UMGunStateInterface::GetGun() const
 
 void UMGunStateInterface::Config()
 {
-	if(Gun->GetAttachParentActor()) Gun->SetActorRelativeLocation(Offset);
+	Gun->SetActorRelativeLocation(Offset);
+	
 }
 
 void UMGunStateInterface::Hide()

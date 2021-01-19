@@ -40,6 +40,9 @@ bool UMInventoryComponent::TryDropGun()
 			if(Gun->TryDrop())
 			{
 				Guns.Remove(Gun);
+				const FVector Offset = Owner->GetTransform().TransformPosition(FVector(100,0,-50));
+				
+				Gun->SetActorLocation(Offset);
 				Owner->MainHandler.InteractHandler = nullptr;
 				return true;
 			}

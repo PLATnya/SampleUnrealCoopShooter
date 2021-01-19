@@ -8,8 +8,10 @@ AMInteractActor::AMInteractActor()
 }
 bool AMInteractActor::TryGet(AActor* Parent )
 {
+	
 	if(UsersCount< UsersLimit)
 	{
+		
 		UsersCount++;
 		return true;
 	}

@@ -2,6 +2,9 @@
 
 #include "SampleUnrealCoopFPS/Public/MGunActor.h"
 
+#include "CollisionDebugDrawingPublic.h"
+#include "DrawDebugHelpers.h"
+
 AMGunActor::AMGunActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -11,6 +14,18 @@ AMGunActor::AMGunActor()
 	WeaponTagsMap.Add("WeaponShootTag", FGameplayTag::RequestGameplayTag("Weapon"));
 	WeaponTagsMap.Add("AmmoType", FGameplayTag::EmptyTag);
  }
+
+void AMGunActor::Shoot()
+{
+	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::SHOOT]);
+}
+
+void AMGunActor::Reload()
+{
+	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
+}
+
+
 
 
 int32 AMGunActor::GetClipCount()
@@ -33,15 +48,25 @@ void AMGunActor::SetMaxClipCount(int32 Count)
 	MaxClipCount = Count;
 }
 
+
+
+
 bool AMGunActor::TryGet(AActor* Parent)
 {
 	if(Super::TryGet(Parent))
 	{
+		
 		AMCharacterBase* ParentCharacter = Cast<AMCharacterBase>(Parent);
 		if(ParentCharacter)
 		{
-			AttachToComponent(Cast<APlayerController>(ParentCharacter->GetController())->PlayerCameraManager->GetTransformComponent(),FAttachmentTransformRules::KeepRelativeTransform);
+			
+			//AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
+			USceneComponent* CamManagerComponent = Cast<APlayerController>(ParentCharacter->GetController())->PlayerCameraManager->GetTransformComponent();
+			AttachToComponent(CamManagerComponent,FAttachmentTransformRules::KeepRelativeTransform);
+			//SetActorRotation(FRotator(0,ParentCharacter->GetActorRotation().Yaw,0));
+			SetActorRelativeRotation(FRotator::ZeroRotator);
 		}
+		
 		return true;
 	}
 	return false;
@@ -51,27 +76,13 @@ bool AMGunActor::TryDrop()
 {
 	if(Super::TryDrop())
 	{
-		
-		AActor* Parent = GetAttachParentActor();
+		AActor* Parent = GetAttachParentActor();		
 		if(Parent)
 		{
-			FHitResult OutHit;
-			FVector Offset = Parent->GetTransform().TransformPosition(FVector(100,0,-100));
-			FCollisionQueryParams Params;
-			Params.AddIgnoredActor(Parent);
-			Params.AddIgnoredActor(this);
-			
-			bool bRaycast = ActorLineTraceSingle(OutHit, Parent->GetActorLocation(),Parent->GetActorLocation()+Offset,ECollisionChannel::ECC_Visibility,Params);
-			if(bRaycast&&!OutHit.bBlockingHit)
-			{
-				DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-				SetActorLocation(Parent->GetActorLocation()+Offset);
-				SetActorRotation(FRotator::ZeroRotator );
-				return true;
-			}
-			
+			DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);	
+			return true;
 		}
-		
+
 	}
 	return false;
 }
@@ -101,14 +112,15 @@ void AMGunActor::AddAbilities()
 	WeaponTagsContainer.AddTag(WeaponTagsMap["WeaponTag"]);
 	
 	WeaponTagsContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"));
-	for (TSubclassOf<UGameplayAbility>& Ability : Abilities)
+	
+	for (auto& Ability : Abilities)
 	{
-		const FGameplayAbilitySpec SpecHandle = FGameplayAbilitySpec(Ability, 2, Index, this);
+		const FGameplayAbilitySpec SpecHandle = FGameplayAbilitySpec(Ability.Value, 2, Index, this);
 		
 		if(SpecHandle.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"))||
 			SpecHandle.Ability->AbilityTags.HasTag(WeaponTagsMap["WeaponTag"]))
 		{
-			AbilitySpecHandles.Add(GetAbilitySystemComponent()->GiveAbility(SpecHandle));
+			AbilitySpecHandles.Add(Ability.Key,GetAbilitySystemComponent()->GiveAbility(SpecHandle));
 			Index++;
 		}
 	}
@@ -125,9 +137,9 @@ void AMGunActor::RemoveAbilities()
 	{
 		return;
 	}
-	for (FGameplayAbilitySpecHandle& SpecHandle : AbilitySpecHandles)
+	for (auto& SpecHandle : AbilitySpecHandles)
 	{
-		GetAbilitySystemComponent()->ClearAbility(SpecHandle);
+		GetAbilitySystemComponent()->ClearAbility(SpecHandle.Value);
 	}
 }
 

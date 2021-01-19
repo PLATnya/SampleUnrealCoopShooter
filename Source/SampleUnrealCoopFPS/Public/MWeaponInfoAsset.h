@@ -14,9 +14,9 @@ class SAMPLEUNREALCOOPFPS_API UMWeaponInfoAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn Info")
-	TSubclassOf<AMGunActor> GunClass;
-	FPrimaryAssetId GetPrimaryAssetId() const override
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawn Info")
+	TAssetSubclassOf<AMGunActor> Gun;
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
 		return FPrimaryAssetId("Guns", GetFName());
 	}	

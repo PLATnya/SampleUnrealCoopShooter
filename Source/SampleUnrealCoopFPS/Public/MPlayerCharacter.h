@@ -34,6 +34,6 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	UFUNCTION(BlueprintCallable,Category="Inventory")
 	void ChangeWeapon(const int32 Index);
 	
-    void ChangeWeapon2(const int32 Index);
+
 };
 

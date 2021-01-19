@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
 #include "MCharacterBase.h"
-#include "MGunActor.h"
 #include "MGunStateInterface.generated.h"
 
 UCLASS()
