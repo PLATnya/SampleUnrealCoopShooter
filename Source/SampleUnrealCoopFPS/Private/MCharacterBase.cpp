@@ -1,19 +1,23 @@
-
 #include "MCharacterBase.h"
-#include "Templates/UnrealTemplate.h"
+
+
+
 AMCharacterBase::AMCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
-	MainHandler.Hand = EHand::LEFT;
-	AltHandler.Hand = EHand::RIGHT;
+	MainHandler.Hand = 0;
+	MainHandler.HandTag = FGameplayTag::RequestGameplayTag("Hand.Left");
+	AltHandler.Hand = 1;
+	AltHandler.HandTag = FGameplayTag::RequestGameplayTag("Hand.Right");
 }
 
 void AMCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	AddCharacterAbilities();
+
 }
 bool AMCharacterBase::IsAlive() const
 {

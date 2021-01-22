@@ -4,6 +4,7 @@
 AMPlayerCharacter::AMPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	
 	Inventory = CreateDefaultSubobject<UMInventoryComponent>("InventoryOfGuns");
 	AmmoAttributeSet = CreateDefaultSubobject<UMAttributeSetInventory>("AmmoAttributeSet");
 }
@@ -151,20 +152,22 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 				AltHandler.InteractHandler = nullptr;
 			}
 			GetAbilitySystemComponent()->CancelAbilities(&AbilityTagsToCancel);
+			
 			switch (MainHandler.Hand)
 			{
-			case EHand::LEFT:
+			case 0:
 				Gun->GunState =NewObject<UMLeftGunState>();
 				Gun->GunState->SetGun(Gun);
 				Gun->GunState->Config();
 				Gun->GunState->Show();
 				break;
-			case EHand::RIGHT:
+			case 1:
 				Gun->GunState =NewObject<UMRightGunState>();
 				Gun->GunState->SetGun(Gun);
 				Gun->GunState->Config();
 				Gun->GunState->Show();
 				break;
+			
 			}
 		
 			MainHandler.InteractHandler = Gun;

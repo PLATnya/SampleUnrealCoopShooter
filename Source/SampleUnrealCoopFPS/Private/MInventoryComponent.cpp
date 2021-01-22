@@ -1,12 +1,23 @@
 ﻿
 #include "SampleUnrealCoopFPS/Public/MInventoryComponent.h"
+
+#include "Blueprint/UserWidget.h"
+#include "MCharacterBase.h"
+
+void UMInventoryComponent::BeginPlay()
+{
+	APlayerController* WidgetOwner = Cast<APlayerController>(Cast<AMCharacterBase>(GetOwner())->GetController());
+	ScreenAmmoWidget = CreateWidget<UUserWidget>(WidgetOwner,AmmoWidget);
+	ScreenAmmoWidget->AddToPlayerScreen();
+
+	
+}
+
 UMInventoryComponent::UMInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	GunsLimit = 5;
-
 }
-
 
 bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun)
 {
@@ -16,7 +27,8 @@ bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun)
 	
 	Guns.Add(NewGun);	
 	NewGun->SetAbilitySystemComponent(Owner->GetAbilitySystemComponent());
-	NewGun->AddAbilities();
+	Owner->MainHandler.HandTag;
+	NewGun->AddAbilities(Guns.Num()+1,Owner->MainHandler.HandTag);
 	
 	if(!NewGun->GunState)
 	{
@@ -24,7 +36,7 @@ bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun)
 		NewGun->GunState = NewState;
 		NewGun->GunState->SetGun(NewGun);
 		NewState->Config();
-	}
+	} 
 	NewGun->GunState->Hide();
 	return true;
 }

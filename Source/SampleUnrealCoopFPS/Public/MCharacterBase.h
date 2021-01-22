@@ -3,44 +3,45 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "MAttributeSetCharacter.h"
-#include "GameplayAbilitySet.h"
-#include "MInteractActor.h"
 #include "MCharacterBase.generated.h"
-
+/*
 UENUM()
 enum EHand
 {
-	LEFT,
-	RIGHT
-};
+	Left  UMETA(DisplayName = "LeftHand") ,
+	Right UMETA(DisplayName = "RightHand")
+};*/
 
 USTRUCT(BlueprintType)
 struct FHandler
 {
 	GENERATED_BODY()
-	
 	UPROPERTY(BlueprintReadWrite)
-	AMInteractActor* InteractHandler;
-	EHand Hand;
+	class AMInteractActor* InteractHandler;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Hand;
+	UPROPERTY()
+	FGameplayTag HandTag;
 };
 
 UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
 	UPROPERTY()
 	class UAbilitySystemComponent* AbilitySystemComponent;
 	UPROPERTY()
 	class UMAttributeSetCharacter* AttributeSet;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 protected:
+	
+	
 	virtual void BeginPlay() override;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "MCharacter|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 public:	
 	AMCharacterBase();
-
+	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION(BlueprintCallable)

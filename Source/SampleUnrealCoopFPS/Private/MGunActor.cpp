@@ -1,28 +1,87 @@
 ﻿
 
 #include "SampleUnrealCoopFPS/Public/MGunActor.h"
+#include "AbilitySystemComponent.h"
+#include "MCharacterBase.h"
 
-#include "CollisionDebugDrawingPublic.h"
-#include "DrawDebugHelpers.h"
+void AMGunActor::OnReloadEnd(const FAbilityEndedData& Data)
+{
+	if(Data.AbilitySpecHandle == AbilitySpecHandles[EGunActions::RELOAD])
+	{
+		bCanStartShoot = true;
+		UE_LOG(LogTemp,Warning, TEXT("FUCKING DELEGATE WORK"));
+	}
+}
+
+
+void AMGunActor::BeginPlay()
+{
+	Super::BeginPlay();
+}
 
 AMGunActor::AMGunActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GunState = NewObject<UMLeftGunState>();
+	
+	//SkeletalMesh->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	RootComponent = CreateDefaultSubobject<USceneComponent>("GunRoot");
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("GunSkeletMesh");
+	SkeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	
 	WeaponTagsMap.Add("WeaponTag", FGameplayTag::RequestGameplayTag("Weapon"));
-	WeaponTagsMap.Add("WeaponReloadTag", FGameplayTag::RequestGameplayTag("Weapon"));
-	WeaponTagsMap.Add("WeaponShootTag", FGameplayTag::RequestGameplayTag("Weapon"));
-	WeaponTagsMap.Add("AmmoType", FGameplayTag::EmptyTag);
- }
+	WeaponTagsMap.Add("HandTag",FGameplayTag::EmptyTag);
 
-void AMGunActor::Shoot()
+	bCanStartShoot = true;
+}
+
+UGameplayEffect* AMGunActor::MakeAmmoEffect(float Magnitude)
 {
-	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::SHOOT]);
+	// Create a dynamic instant Gameplay Effect to give the bounties
+	UGameplayEffect* GEBounty = NewObject<UGameplayEffect>(GetTransientPackage(), FName(TEXT("Bounty")));
+	GEBounty->DurationPolicy = EGameplayEffectDurationType::Instant;
+
+	GEBounty->Modifiers.SetNum(1);
+
+	FGameplayModifierInfo& InfoAmmo = GEBounty->Modifiers[0];
+	InfoAmmo.ModifierMagnitude = FScalableFloat(Magnitude);
+	InfoAmmo.ModifierOp = EGameplayModOp::Additive;
+	InfoAmmo.Attribute = ReserveAmmoAttribute;
+	
+	return GEBounty;
+	
+}
+
+void AMGunActor::Shoot_Implementation(FName SocketName)
+{
+	
+	if(GetClipCount()>0)
+	{
+		FVector Location = FVector(0,0,0);
+		FRotator Rotation = FRotator(0,0,0);
+		if(SkeletalMesh->MeshObject)
+		{
+			Location = SkeletalMesh->GetSocketLocation(SocketName);
+			Rotation = SkeletalMesh->GetSocketRotation(SocketName);
+			
+		}
+		GetWorld()->SpawnActor<AActor>(Projectile,Location,Rotation);
+		
+		if(SkeletalMesh->GetAnimInstance())
+			SkeletalMesh->GetAnimInstance()->Montage_Play(ActionMontages[EGunActions::SHOOT]);
+		SetClipCount(GetClipCount()-1);
+	}
 }
 
 void AMGunActor::Reload()
 {
-	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
+	if(bCanStartShoot)
+	{
+		if(GetClipCount()<GetMaxClipCount()){
+			bool bActivatedReload = GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
+			if(bActivatedReload) bCanStartShoot = false;
+		}
+	}
 }
 
 
@@ -60,10 +119,8 @@ bool AMGunActor::TryGet(AActor* Parent)
 		if(ParentCharacter)
 		{
 			
-			//AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
 			USceneComponent* CamManagerComponent = Cast<APlayerController>(ParentCharacter->GetController())->PlayerCameraManager->GetTransformComponent();
 			AttachToComponent(CamManagerComponent,FAttachmentTransformRules::KeepRelativeTransform);
-			//SetActorRotation(FRotator(0,ParentCharacter->GetActorRotation().Yaw,0));
 			SetActorRelativeRotation(FRotator::ZeroRotator);
 		}
 		
@@ -97,7 +154,7 @@ void AMGunActor::SetAbilitySystemComponent(UAbilitySystemComponent* Asc)
 	AbilitySystemComponent = Asc;
 }
 
-void AMGunActor::AddAbilities()
+void AMGunActor::AddAbilities(int32 InLevel, FGameplayTag HandTag)
 {
 	if (!GetAbilitySystemComponent())
 	{
@@ -107,24 +164,23 @@ void AMGunActor::AddAbilities()
 	{
 		return;
 	}
+	
 	int32 Index = 0;
-	FGameplayTagContainer WeaponTagsContainer;
-	WeaponTagsContainer.AddTag(WeaponTagsMap["WeaponTag"]);
-	
-	WeaponTagsContainer.AddTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"));
-	
 	for (auto& Ability : Abilities)
 	{
-		const FGameplayAbilitySpec SpecHandle = FGameplayAbilitySpec(Ability.Value, 2, Index, this);
+		//TODO:какого хрена HasAny тут не фурычит?
+		const FGameplayAbilitySpec Spec = FGameplayAbilitySpec(Ability.Value.GetDefaultObject(), InLevel, Index, this);
 		
-		if(SpecHandle.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"))||
-			SpecHandle.Ability->AbilityTags.HasTag(WeaponTagsMap["WeaponTag"]))
+		UE_LOG(LogTemp,Warning,TEXT("%s"),*GetNameSafe(Spec.Ability));
+		if(Spec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"))|| Spec.Ability->AbilityTags.HasTag(WeaponTagsMap["WeaponTag"]))
 		{
-			AbilitySpecHandles.Add(Ability.Key,GetAbilitySystemComponent()->GiveAbility(SpecHandle));
+			AbilitySpecHandles.Add(Ability.Key,GetAbilitySystemComponent()->GiveAbility(Spec));
 			Index++;
 		}
-	}
+		
 
+	}
+	GetAbilitySystemComponent()->OnAbilityEnded.AddUObject(this, &AMGunActor::OnReloadEnd);
 	
 }
 void AMGunActor::RemoveAbilities()
@@ -137,6 +193,7 @@ void AMGunActor::RemoveAbilities()
 	{
 		return;
 	}
+	
 	for (auto& SpecHandle : AbilitySpecHandles)
 	{
 		GetAbilitySystemComponent()->ClearAbility(SpecHandle.Value);
