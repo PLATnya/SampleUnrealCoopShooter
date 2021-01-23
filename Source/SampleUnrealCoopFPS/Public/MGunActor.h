@@ -40,7 +40,8 @@ class SAMPLEUNREALCOOPFPS_API AMGunActor : public AMInteractActor,  public IAbil
 
 	
 protected:
-
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> AddAmmoEffect;
 	
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere , BlueprintReadOnly)
@@ -58,7 +59,8 @@ protected:
 	TMap<EGunActions,UAnimMontage*> ActionMontages;
 	
 public:
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UCameraShakeSourceComponent* ShakeSource;
 	
 	AMGunActor();
 	UPROPERTY(BlueprintReadWrite, Category="Weapon")

@@ -3,13 +3,13 @@
 #include "SampleUnrealCoopFPS/Public/MGunActor.h"
 #include "AbilitySystemComponent.h"
 #include "MCharacterBase.h"
+#include "Camera/CameraShakeSourceComponent.h"
 
 void AMGunActor::OnReloadEnd(const FAbilityEndedData& Data)
 {
 	if(Data.AbilitySpecHandle == AbilitySpecHandles[EGunActions::RELOAD])
 	{
 		bCanStartShoot = true;
-		UE_LOG(LogTemp,Warning, TEXT("FUCKING DELEGATE WORK"));
 	}
 }
 
@@ -17,6 +17,8 @@ void AMGunActor::OnReloadEnd(const FAbilityEndedData& Data)
 void AMGunActor::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	
 }
 
 AMGunActor::AMGunActor()
@@ -28,7 +30,9 @@ AMGunActor::AMGunActor()
 	RootComponent = CreateDefaultSubobject<USceneComponent>("GunRoot");
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("GunSkeletMesh");
 	SkeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	
+
+	ShakeSource = CreateDefaultSubobject<UCameraShakeSourceComponent>("Shake");
+	ShakeSource->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
 	WeaponTagsMap.Add("WeaponTag", FGameplayTag::RequestGameplayTag("Weapon"));
 	WeaponTagsMap.Add("HandTag",FGameplayTag::EmptyTag);
 
@@ -57,6 +61,7 @@ void AMGunActor::Shoot_Implementation(FName SocketName)
 	
 	if(GetClipCount()>0)
 	{
+		if(ShakeSource->CameraShake)ShakeSource->Start();
 		FVector Location = FVector(0,0,0);
 		FRotator Rotation = FRotator(0,0,0);
 		if(SkeletalMesh->MeshObject)
