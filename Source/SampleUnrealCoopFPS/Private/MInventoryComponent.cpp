@@ -6,6 +6,7 @@
 
 void UMInventoryComponent::BeginPlay()
 {
+	Super::BeginPlay();
 	APlayerController* WidgetOwner = Cast<APlayerController>(Cast<AMCharacterBase>(GetOwner())->GetController());
 	ScreenAmmoWidget = CreateWidget<UUserWidget>(WidgetOwner,AmmoWidget);
 	ScreenAmmoWidget->AddToPlayerScreen();
@@ -17,18 +18,21 @@ UMInventoryComponent::UMInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	GunsLimit = 5;
+	AmmoWidget = nullptr;
+	
 }
 
 bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun)
 {
 	AMCharacterBase* Owner = Cast<AMCharacterBase>(GetOwner());
 	if(!NewGun->TryGet(Owner)) return false; 
+	
 	if(Guns.Num()>=GunsLimit) return false;
 	
 	Guns.Add(NewGun);	
 	NewGun->SetAbilitySystemComponent(Owner->GetAbilitySystemComponent());
-	Owner->MainHandler.HandTag;
-	NewGun->AddAbilities(Guns.Num()+1,Owner->MainHandler.HandTag);
+	
+	NewGun->AddAbilities(Guns.Num()+1);
 	
 	if(!NewGun->GunState)
 	{

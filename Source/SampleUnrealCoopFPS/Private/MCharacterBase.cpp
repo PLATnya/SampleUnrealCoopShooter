@@ -7,10 +7,11 @@ AMCharacterBase::AMCharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
+	
 	MainHandler.Hand = 0;
-	MainHandler.HandTag = FGameplayTag::RequestGameplayTag("Hand.Left");
+	
 	AltHandler.Hand = 1;
-	AltHandler.HandTag = FGameplayTag::RequestGameplayTag("Hand.Right");
+	
 }
 
 void AMCharacterBase::BeginPlay()
@@ -34,6 +35,7 @@ void AMCharacterBase::AddCharacterAbilities()
 		return;
 	}
 
+	
 	int index = 0;
 	for (TSubclassOf<UGameplayAbility>& StartupAbility : CharacterAbilities)
 	{

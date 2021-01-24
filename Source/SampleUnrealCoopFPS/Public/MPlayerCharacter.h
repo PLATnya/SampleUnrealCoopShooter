@@ -25,7 +25,7 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	UMAttributeSetInventory* AmmoAttributeSet;
 
 	protected:
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Category=Inventory, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	class UMInventoryComponent* Inventory;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

@@ -17,10 +17,7 @@ class SAMPLEUNREALCOOPFPS_API UMInventoryComponent : public UActorComponent
 	UUserWidget* ScreenAmmoWidget;
 public:
 	UMInventoryComponent();
-
-
-	
-	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
+	UPROPERTY(Category="Widget", EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UUserWidget> AmmoWidget;
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class AMGunActor*> Guns;

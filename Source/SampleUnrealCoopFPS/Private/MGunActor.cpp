@@ -34,7 +34,6 @@ AMGunActor::AMGunActor()
 	ShakeSource = CreateDefaultSubobject<UCameraShakeSourceComponent>("Shake");
 	ShakeSource->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
 	WeaponTagsMap.Add("WeaponTag", FGameplayTag::RequestGameplayTag("Weapon"));
-	WeaponTagsMap.Add("HandTag",FGameplayTag::EmptyTag);
 
 	bCanStartShoot = true;
 }
@@ -54,6 +53,11 @@ UGameplayEffect* AMGunActor::MakeAmmoEffect(float Magnitude)
 	
 	return GEBounty;
 	
+}
+
+void AMGunActor::AbilityShoot()
+{
+	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::SHOOT]);
 }
 
 void AMGunActor::Shoot_Implementation(FName SocketName)
@@ -80,13 +84,14 @@ void AMGunActor::Shoot_Implementation(FName SocketName)
 
 void AMGunActor::Reload()
 {
-	if(bCanStartShoot)
+	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
+	/*if(bCanStartShoot)
 	{
 		if(GetClipCount()<GetMaxClipCount()){
 			bool bActivatedReload = GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
 			if(bActivatedReload) bCanStartShoot = false;
 		}
-	}
+	}*/
 }
 
 
@@ -159,7 +164,7 @@ void AMGunActor::SetAbilitySystemComponent(UAbilitySystemComponent* Asc)
 	AbilitySystemComponent = Asc;
 }
 
-void AMGunActor::AddAbilities(int32 InLevel, FGameplayTag HandTag)
+void AMGunActor::AddAbilities(int32 InLevel)
 {
 	if (!GetAbilitySystemComponent())
 	{
@@ -175,18 +180,19 @@ void AMGunActor::AddAbilities(int32 InLevel, FGameplayTag HandTag)
 	{
 		//TODO:какого хрена HasAny тут не фурычит?
 		const FGameplayAbilitySpec Spec = FGameplayAbilitySpec(Ability.Value.GetDefaultObject(), InLevel, Index, this);
+
+		UGameplayAbility* f = NewObject<UMGameplayAbility>();
 		
 		UE_LOG(LogTemp,Warning,TEXT("%s"),*GetNameSafe(Spec.Ability));
-		if(Spec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"))|| Spec.Ability->AbilityTags.HasTag(WeaponTagsMap["WeaponTag"]))
-		{
+		//if(Spec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"))|| Spec.Ability->AbilityTags.HasTag(WeaponTagsMap["WeaponTag"]))
+		//{
 			AbilitySpecHandles.Add(Ability.Key,GetAbilitySystemComponent()->GiveAbility(Spec));
 			Index++;
-		}
+		//}
 		
 
 	}
-	GetAbilitySystemComponent()->OnAbilityEnded.AddUObject(this, &AMGunActor::OnReloadEnd);
-	
+	//GetAbilitySystemComponent()->OnAbilityEnded.AddUObject(this, &AMGunActor::OnReloadEnd);
 }
 void AMGunActor::RemoveAbilities()
 {

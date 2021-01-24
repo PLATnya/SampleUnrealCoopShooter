@@ -73,8 +73,11 @@ public:
 	FGameplayAttribute ReserveAmmoAttribute;
 
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	FVector SpawnPoint;
+	
+
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+    void AbilityShoot();
+	
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category="Weapon")
 	void Shoot(FName SocketName = "Root");
 	virtual void Shoot_Implementation(FName SocketName = "Root");
@@ -108,7 +111,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GAS")
 	void SetAbilitySystemComponent(UAbilitySystemComponent* Asc);
 	UFUNCTION(BlueprintCallable, Category= "GAS")
-	void AddAbilities(int32 InLevel, FGameplayTag HandTag);
+	void AddAbilities(int32 InLevel);
 	UFUNCTION(BlueprintCallable, Category= "GAS")
 	void RemoveAbilities();
 };

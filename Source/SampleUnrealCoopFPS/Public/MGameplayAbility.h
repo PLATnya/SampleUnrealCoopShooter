@@ -11,9 +11,9 @@ class SAMPLEUNREALCOOPFPS_API UMGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	public:
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void AddBlockedTags(FGameplayTagContainer Container);
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void TryRemoveBlockedTags(FGameplayTagContainer Container);
 	
 };
