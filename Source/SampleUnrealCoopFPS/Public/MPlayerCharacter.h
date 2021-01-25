@@ -31,6 +31,9 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 
 	public:
 	AMPlayerCharacter();
+
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable,Category = Character)
+	void CheckLedge(int32 MaxTraceCount);
 	UFUNCTION(BlueprintCallable,Category="Inventory")
 	void ChangeWeapon(const int32 Index);
 	

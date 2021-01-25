@@ -9,6 +9,8 @@ AMPlayerCharacter::AMPlayerCharacter()
 	AmmoAttributeSet = CreateDefaultSubobject<UMAttributeSetInventory>("AmmoAttributeSet");
 }
 
+
+
 /*
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {
@@ -205,6 +207,7 @@ void AMPlayerCharacter::Turn(float Value)
 
 void AMPlayerCharacter::MoveForward(float Value)
 {
+	if(Value >0) CheckLedge(4);
 	AddMovementInput(GetActorForwardVector(),Value);
 }
 
