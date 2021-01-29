@@ -87,6 +87,9 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("Turn", this, &AMPlayerCharacter::Turn);
 }
 
+
+
+
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {
 	if(Index>=Inventory->Guns.Num())
@@ -132,6 +135,7 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 			AltHandler.InteractHandler = Gun;
 			Gun->GunState->Show();
 			Gun->GunState->Show();
+			Gun->WeaponTagsMap["HandTag"] = MainHandler.HandTag;
 		}
 		
 
@@ -158,6 +162,7 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 			switch (MainHandler.Hand)
 			{
 			case 0:
+				
 				Gun->GunState =NewObject<UMLeftGunState>();
 				Gun->GunState->SetGun(Gun);
 				Gun->GunState->Config();
@@ -169,15 +174,13 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 				Gun->GunState->Config();
 				Gun->GunState->Show();
 				break;
-			
+				
 			}
-		
+			Gun->WeaponTagsMap["HandTag"] = MainHandler.HandTag;
 			MainHandler.InteractHandler = Gun;
 		}else if(MainGun == Gun&&HandlerValid)
 		{
 			AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
-
-			
 			GetAbilitySystemComponent()->CancelAbilities(&AbilityTagsToCancel);
 			MainGun->GunState->Hide();
 			MainHandler.InteractHandler = nullptr;
@@ -187,11 +190,6 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		
 	}
 }
-
-
-
-
-
 void AMPlayerCharacter::LookUp(float Value)
 {
 	if (IsAlive())

@@ -20,6 +20,8 @@ struct FHandler
 	class AMInteractActor* InteractHandler;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Hand;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag HandTag;
 	
 };
 

@@ -5,15 +5,6 @@
 #include "MCharacterBase.h"
 #include "Camera/CameraShakeSourceComponent.h"
 
-void AMGunActor::OnReloadEnd(const FAbilityEndedData& Data)
-{
-	if(Data.AbilitySpecHandle == AbilitySpecHandles[EGunActions::RELOAD])
-	{
-		bCanStartShoot = true;
-	}
-}
-
-
 void AMGunActor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -34,68 +25,23 @@ AMGunActor::AMGunActor()
 	ShakeSource = CreateDefaultSubobject<UCameraShakeSourceComponent>("Shake");
 	ShakeSource->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
 	WeaponTagsMap.Add("WeaponTag", FGameplayTag::RequestGameplayTag("Weapon"));
+	WeaponTagsMap.Add("HandTag",FGameplayTag::EmptyTag);
 
 	bCanStartShoot = true;
 }
 
-UGameplayEffect* AMGunActor::MakeAmmoEffect(float Magnitude)
-{
-	// Create a dynamic instant Gameplay Effect to give the bounties
-	UGameplayEffect* GEBounty = NewObject<UGameplayEffect>(GetTransientPackage(), FName(TEXT("Bounty")));
-	GEBounty->DurationPolicy = EGameplayEffectDurationType::Instant;
-
-	GEBounty->Modifiers.SetNum(1);
-
-	FGameplayModifierInfo& InfoAmmo = GEBounty->Modifiers[0];
-	InfoAmmo.ModifierMagnitude = FScalableFloat(Magnitude);
-	InfoAmmo.ModifierOp = EGameplayModOp::Additive;
-	InfoAmmo.Attribute = ReserveAmmoAttribute;
-	
-	return GEBounty;
-	
-}
 
 void AMGunActor::AbilityShoot()
 {
 	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::SHOOT]);
 }
 
-void AMGunActor::Shoot_Implementation(FName SocketName)
-{
-	
-	if(GetClipCount()>0)
-	{
-		if(ShakeSource->CameraShake)ShakeSource->Start();
-		FVector Location = FVector(0,0,0);
-		FRotator Rotation = FRotator(0,0,0);
-		if(SkeletalMesh->MeshObject)
-		{
-			Location = SkeletalMesh->GetSocketLocation(SocketName);
-			Rotation = SkeletalMesh->GetSocketRotation(SocketName);
-			
-		}
-		GetWorld()->SpawnActor<AActor>(Projectile,Location,Rotation);
-		
-		if(SkeletalMesh->GetAnimInstance())
-			SkeletalMesh->GetAnimInstance()->Montage_Play(ActionMontages[EGunActions::SHOOT]);
-		SetClipCount(GetClipCount()-1);
-	}
-}
 
 void AMGunActor::Reload()
 {
 	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
-	/*if(bCanStartShoot)
-	{
-		if(GetClipCount()<GetMaxClipCount()){
-			bool bActivatedReload = GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
-			if(bActivatedReload) bCanStartShoot = false;
-		}
-	}*/
+
 }
-
-
-
 
 int32 AMGunActor::GetClipCount()
 {
@@ -118,8 +64,6 @@ void AMGunActor::SetMaxClipCount(int32 Count)
 }
 
 
-
-
 bool AMGunActor::TryGet(AActor* Parent)
 {
 	if(Super::TryGet(Parent))
@@ -127,8 +71,7 @@ bool AMGunActor::TryGet(AActor* Parent)
 		
 		AMCharacterBase* ParentCharacter = Cast<AMCharacterBase>(Parent);
 		if(ParentCharacter)
-		{
-			
+		{	
 			USceneComponent* CamManagerComponent = Cast<APlayerController>(ParentCharacter->GetController())->PlayerCameraManager->GetTransformComponent();
 			AttachToComponent(CamManagerComponent,FAttachmentTransformRules::KeepRelativeTransform);
 			SetActorRelativeRotation(FRotator::ZeroRotator);
@@ -149,7 +92,6 @@ bool AMGunActor::TryDrop()
 			DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);	
 			return true;
 		}
-
 	}
 	return false;
 }
@@ -178,21 +120,11 @@ void AMGunActor::AddAbilities(int32 InLevel)
 	int32 Index = 0;
 	for (auto& Ability : Abilities)
 	{
-		//TODO:какого хрена HasAny тут не фурычит?
 		const FGameplayAbilitySpec Spec = FGameplayAbilitySpec(Ability.Value.GetDefaultObject(), InLevel, Index, this);
-
 		UGameplayAbility* f = NewObject<UMGameplayAbility>();
-		
-		UE_LOG(LogTemp,Warning,TEXT("%s"),*GetNameSafe(Spec.Ability));
-		//if(Spec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("Ability.Weapon.Gun"))|| Spec.Ability->AbilityTags.HasTag(WeaponTagsMap["WeaponTag"]))
-		//{
-			AbilitySpecHandles.Add(Ability.Key,GetAbilitySystemComponent()->GiveAbility(Spec));
-			Index++;
-		//}
-		
-
+		AbilitySpecHandles.Add(Ability.Key,GetAbilitySystemComponent()->GiveAbility(Spec));
+		Index++;
 	}
-	//GetAbilitySystemComponent()->OnAbilityEnded.AddUObject(this, &AMGunActor::OnReloadEnd);
 }
 void AMGunActor::RemoveAbilities()
 {

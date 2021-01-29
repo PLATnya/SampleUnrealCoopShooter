@@ -9,8 +9,9 @@ AMCharacterBase::AMCharacterBase()
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
 	
 	MainHandler.Hand = 0;
-	
+	MainHandler.HandTag = FGameplayTag::RequestGameplayTag("Hand.Left");
 	AltHandler.Hand = 1;
+	AltHandler.HandTag = FGameplayTag::RequestGameplayTag("Hand.Right");
 	
 }
 
@@ -74,7 +75,9 @@ void AMCharacterBase::SetHealth(float Health)
 }
 void AMCharacterBase::SwapHandlers()
 {
+	
 	Swap(MainHandler,AltHandler);
+	
 }
 float AMCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)

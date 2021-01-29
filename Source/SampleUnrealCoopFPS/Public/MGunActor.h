@@ -27,21 +27,15 @@ UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMGunActor : public AMInteractActor,  public IAbilitySystemInterface
 {
 	GENERATED_BODY()
+	
 	UPROPERTY()
 	int32 MaxClipCount;
 	UPROPERTY()
 	int32 ClipCount;
-	
 	UPROPERTY()
 	UAbilitySystemComponent* AbilitySystemComponent;
-	
-	UFUNCTION()
-	void OnReloadEnd(const FAbilityEndedData& Data);
-
-	
 protected:
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> AddAmmoEffect;
+
 	
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere , BlueprintReadOnly)
@@ -65,23 +59,13 @@ public:
 	AMGunActor();
 	UPROPERTY(BlueprintReadWrite, Category="Weapon")
 	bool bCanStartShoot;
-	
-	UFUNCTION(BlueprintCallable, Category = "GAS")
-	UGameplayEffect* MakeAmmoEffect(float Magnitude);
-	
+
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "GAS")
 	FGameplayAttribute ReserveAmmoAttribute;
-
-	
-	
 
 	UFUNCTION(BlueprintCallable, Category="Weapon")
     void AbilityShoot();
 	
-	UFUNCTION(BlueprintNativeEvent,BlueprintCallable, Category="Weapon")
-	void Shoot(FName SocketName = "Root");
-	virtual void Shoot_Implementation(FName SocketName = "Root");
-
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category="Weapon")
 	void EndShoot();
 	
