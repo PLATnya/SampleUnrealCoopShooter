@@ -7,76 +7,12 @@ AMPlayerCharacter::AMPlayerCharacter()
 	
 	Inventory = CreateDefaultSubobject<UMInventoryComponent>("InventoryOfGuns");
 	AmmoAttributeSet = CreateDefaultSubobject<UMAttributeSetInventory>("AmmoAttributeSet");
+	/*
+	LeftArm = CreateDefaultSubobject<UMSpringArmComponent>("LeftArm");
+	RightArm = CreateDefaultSubobject<UMSpringArmComponent>("RightArm");
+	*/
+	
 }
-
-
-
-/*
-void AMPlayerCharacter::ChangeWeapon(const int32 Index)
-{
-	if(Index>=Inventory->Guns.Num())
-		return;
-	FGameplayTagContainer AbilityTagsToCancel;
-	AMGunActor* Gun = Inventory->Guns[Index];
-	AMGunActor* MainGun = Cast<AMGunActor>(MainHandler.InteractHandler);
-	
-	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler.InteractHandler);
-	const bool HandlerValid = IsValid(MainGun);
-	const bool AltHandlerValid = IsValid(AltGun);
-
-	if(HandlerValid)
-	{
-		MainGun->GunState->Hide();
-		MainHandler.InteractHandler = nullptr;
-		
-		AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
-	}
-	if(Gun!=MainGun)
-	{
-		if(Gun == AltGun)
-		{
-			AltHandler.InteractHandler = nullptr;
-		}else
-		{
-			MainHandler.InteractHandler = Gun;
-		}
-	}
-	if(Gun->bTwoHanded)
-	{
-		if(AltHandlerValid)
-		{
-			AltGun->GunState->Hide();
-			AltHandler.InteractHandler = nullptr;
-			AbilityTagsToCancel.AddTag(AltGun->WeaponTagsMap["WeaponTag"]);
-			if(Gun!=MainGun)
-			{
-				AltHandler.InteractHandler = Gun;
-			}
-		}
-		Gun->GunState = NewObject<UMCenterGunState>();
-		Gun->GunState->SetGun(Gun);
-		Gun->GunState->Config();
-		Gun->GunState->Show();
-	}else
-	{
-		if(Gun!=MainGun)
-		{
-			switch (MainHandler.Hand)
-			{
-			case EHand::LEFT:
-				Gun->GunState = NewObject<UMLeftGunState>();
-				break;
-			case EHand::RIGHT:
-				Gun->GunState = NewObject<UMRightGunState>();
-				break;
-			}
-			Gun->GunState->SetGun(Gun);
-			Gun->GunState->Config();
-			Gun->GunState->Show();
-		}
-	}
-	
-}*/
 
 void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -86,9 +22,6 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("LookUp", this, &AMPlayerCharacter::LookUp);
 	PlayerInputComponent->BindAxis("Turn", this, &AMPlayerCharacter::Turn);
 }
-
-
-
 
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {

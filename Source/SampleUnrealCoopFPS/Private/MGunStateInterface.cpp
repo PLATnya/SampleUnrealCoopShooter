@@ -21,6 +21,7 @@ void UMGunStateInterface::Config()
 
 void UMGunStateInterface::Hide()
 {
+	
 	Gun->SetActive(false);
 }
 

@@ -7,6 +7,8 @@
 #include "MAttributeSetInventory.h"
 #include "MCharacterBase.h"
 #include "MInventoryComponent.h"
+#include "MSpringArmComponent.h"
+
 #include "MPlayerCharacter.generated.h"
 
 /**
@@ -29,9 +31,17 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	class UMInventoryComponent* Inventory;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 	public:
 	AMPlayerCharacter();
 
+	/*
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	class UMSpringArmComponent* LeftArm;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	class UMSpringArmComponent* RightArm;
+	*/
+	
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable,Category = Character)
 	void CheckLedge(int32 MaxTraceCount);
 	UFUNCTION(BlueprintCallable,Category="Inventory")

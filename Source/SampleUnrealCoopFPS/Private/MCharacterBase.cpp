@@ -15,6 +15,11 @@ AMCharacterBase::AMCharacterBase()
 	
 }
 
+void AMCharacterBase::OnDeath_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s is dead now...so terrible.."),*GetNameSafe(this));
+}
+
 void AMCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -71,6 +76,7 @@ void AMCharacterBase::SetHealth(float Health)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,TEXT("not valid"));
 	}
+	if(Health<=0) OnDeath();
 	
 }
 void AMCharacterBase::SwapHandlers()

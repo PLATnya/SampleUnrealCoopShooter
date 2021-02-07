@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "MCharacterBase.h"
 #include "Camera/CameraShakeSourceComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 void AMGunActor::BeginPlay()
 {
@@ -19,11 +20,13 @@ AMGunActor::AMGunActor()
 	
 	//SkeletalMesh->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
 	RootComponent = CreateDefaultSubobject<USceneComponent>("GunRoot");
+	ArmComponent = CreateDefaultSubobject<USpringArmComponent>("Arm");
+	ArmComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("GunSkeletMesh");
-	SkeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SkeletalMesh->AttachToComponent(ArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ShakeSource = CreateDefaultSubobject<UCameraShakeSourceComponent>("Shake");
-	ShakeSource->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	ShakeSource->AttachToComponent(ArmComponent,FAttachmentTransformRules::KeepRelativeTransform);
 	WeaponTagsMap.Add("WeaponTag", FGameplayTag::RequestGameplayTag("Weapon"));
 	WeaponTagsMap.Add("HandTag",FGameplayTag::EmptyTag);
 

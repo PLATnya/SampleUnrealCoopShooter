@@ -42,6 +42,9 @@ protected:
 	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 public:	
 	AMCharacterBase();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MCharacter|Life")
+	void OnDeath();
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;

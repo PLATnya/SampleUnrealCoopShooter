@@ -11,6 +11,7 @@
 #include "GameplayTagContainer.h"
 #include "MGameplayAbility.h"
 #include "Components/Image.h"
+#include "GameFramework/SpringArmComponent.h"
 
 
 
@@ -40,7 +41,10 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere , BlueprintReadOnly)
 	USkeletalMeshComponent* SkeletalMesh;
-
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	USpringArmComponent* ArmComponent;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UTexture2D* Icon;
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
