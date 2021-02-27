@@ -25,7 +25,7 @@ void AMGunActor::Config()
 AMGunActor::AMGunActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	ClipHolder = NewObject<UMClipHolder>();
+	ClipHolder = CreateDefaultSubobject<UMClipHolder>("ClipHolder");
 	
 	RootComponent = CreateDefaultSubobject<USceneComponent>("GunRoot");
 	ArmComponent = CreateDefaultSubobject<USpringArmComponent>("Arm");
@@ -100,26 +100,4 @@ void AMGunActor::RemoveAbilities()
 }
 
 
-
-
-
-int32 UMClipHolder::GetClipCount()
-{
-	return ClipCount;
-}
-
-int32 UMClipHolder::GetMaxClipCount()
-{
-	return MaxClipCount;
-}
-
-void UMClipHolder::SetClipCount(int32 Count)
-{
-	ClipCount = Count;
-}
-
-void UMClipHolder::SetMaxClipCount(int32 Count)
-{
-	MaxClipCount = Count;
-}
 

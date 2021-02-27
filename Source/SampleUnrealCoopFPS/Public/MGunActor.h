@@ -11,6 +11,7 @@
 #include "GameplayTagContainer.h"
 #include "MGameplayAbility.h"
 #include "Components/Image.h"
+#include "MClipHolder.h"
 #include "GameFramework/SpringArmComponent.h"
 
 
@@ -23,28 +24,6 @@ enum class EGunActions:uint8
 {
 	SHOOT,
     RELOAD
-};
-
-UCLASS()
-class SAMPLEUNREALCOOPFPS_API UMClipHolder:public UObject{
-
-	GENERATED_BODY()
-	UPROPERTY()
-	int32 MaxClipCount;
-	UPROPERTY()
-	int32 ClipCount;
-	
-	public:
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS")
-	FGameplayAttribute ReserveAmmoAttribute;
-	UFUNCTION(BlueprintCallable,BlueprintPure, Category="Weapon")
-	int32 GetClipCount ();
-	UFUNCTION(BlueprintCallable,BlueprintPure, Category="Weapon")
-    int32 GetMaxClipCount();
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-    void SetClipCount(int32 Count);
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-    void SetMaxClipCount(int32 Count);
 };
 
 
@@ -92,7 +71,7 @@ public:
 	virtual void Config() override;
 
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(Category="Weapon", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	UMClipHolder* ClipHolder;
 	UFUNCTION(BlueprintCallable, Category="Weapon")
     void Shoot();
@@ -116,3 +95,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category= "GAS")
 	void RemoveAbilities();
 };
+
+
+

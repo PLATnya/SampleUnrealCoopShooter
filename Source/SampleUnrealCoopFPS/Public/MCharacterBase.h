@@ -60,11 +60,14 @@ public:
 	virtual void SetHealth(float Health);
 	UFUNCTION(BlueprintCallable)
     void SwapHandlers();
+	UFUNCTION(BlueprintCallable,BlueprintPure,Category="MCharacter")
 	FORCEINLINE FHandler& GetHandlerByHand(int32 Hand)
 	{
 		return MainHandler.Hand == Hand?MainHandler:AltHandler;
 	}
-	 FHandler&  GetMainHandler() const{return MainHandler;}
-	 FHandler& GetAltHandler() const {return AltHandler;}
+	UFUNCTION(BlueprintCallable,BlueprintPure,Category="MCharacter")
+	 FORCEINLINE FHandler&  GetMainHandler() const{return MainHandler;}
+	UFUNCTION(BlueprintCallable,BlueprintPure,Category="MCharacter")
+	 FORCEINLINE FHandler& GetAltHandler() const {return AltHandler;}
 	
 };

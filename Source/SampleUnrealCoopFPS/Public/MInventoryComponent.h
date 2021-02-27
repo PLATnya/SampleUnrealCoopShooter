@@ -30,7 +30,8 @@ class SAMPLEUNREALCOOPFPS_API UMInventoryComponent : public UActorComponent
 	bool TryAddGun(AMGunActor* NewGun);
 	UFUNCTION(BlueprintCallable,Category="Inventory")
 	bool TryDropGun();
-	UFUNCTION(BlueprintCallable,Category="Inventory")
+	UFUNCTION(BlueprintCallable,BlueprintPure,Category="Inventory")
 	FORCEINLINE AMGunActor* GetGun(int32 Index) const{ return Index>=GunsLimit?nullptr:Guns[Index]; }
+	UFUNCTION(BlueprintCallable,BlueprintPure,Category="Inventory")
 	FORCEINLINE int32 GetGunsCount()const {return static_cast<int32>(Guns.Num());}
 };
