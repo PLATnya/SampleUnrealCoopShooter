@@ -25,7 +25,6 @@ UMInventoryComponent::UMInventoryComponent()
 	AMPlayerCharacter* OwnerPlayer= Cast<AMPlayerCharacter>(GetOwner());
 	UMSpringArmComponent* Arm = Hand==0?OwnerPlayer->LeftArm:OwnerPlayer->RightArm;
 	GunActor->AttachToComponent(Arm, FAttachmentTransformRules::KeepRelativeTransform);
-	GunActor->SetActorRelativeRotation(FRotator::ZeroRotator);	
 	return Arm;
 }
 
@@ -33,14 +32,15 @@ UMInventoryComponent::UMInventoryComponent()
 bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun)
 {
 	if(Guns.Num()>=GunsLimit||!NewGun->TryTake()) return false;
-	AMCharacterBase* Owner = Cast<AMCharacterBase>(GetOwner());
+	AMPlayerCharacter* Owner = Cast<AMPlayerCharacter>(GetOwner());
 	Guns.Add(NewGun);
-	AttachToArm(0,NewGun);
+	
 	NewGun->SetAbilitySystemComponent(Owner->GetAbilitySystemComponent());
 	NewGun->AddAbilities(Guns.Num()+1);
-	
-	NewGun->Config();
+
+	NewGun->AttachToComponent(Owner->MainCamera,FAttachmentTransformRules::KeepRelativeTransform);
 	NewGun->Hide();
+	
 	return true;
 }
 

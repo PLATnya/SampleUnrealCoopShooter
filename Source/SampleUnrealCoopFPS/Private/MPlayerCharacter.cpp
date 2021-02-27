@@ -64,12 +64,14 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		}else{
 			if(HandlerValid)
 			{
+				MainGun->AttachToComponent(MainCamera,FAttachmentTransformRules::KeepRelativeTransform);
 				MainGun->Hide();
 				AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
 				GetMainHandler().InteractHandler = nullptr;
 			}
 			if(ALtHandlerValid)
 			{
+				AltGun->AttachToComponent(MainCamera,FAttachmentTransformRules::KeepRelativeTransform);
 				AltGun->Hide();
 				AbilityTagsToCancel.AddTag(AltGun->WeaponTagsMap["WeaponTag"]);
 			}
@@ -82,6 +84,8 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		
 			GetMainHandler().InteractHandler = Gun;
 			GetAltHandler().InteractHandler = Gun;
+			Inventory->AttachToArm(0,Gun);
+			Gun->Config();
 			Gun->Show();
 			Gun->WeaponTagsMap["HandTag"] = GetMainHandler().HandTag;
 		}
@@ -95,12 +99,14 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		{
 			if(HandlerValid )
 			{
+				MainGun->AttachToComponent(MainCamera,FAttachmentTransformRules::KeepRelativeTransform);
 				MainGun->Hide();
 				AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
 				GetMainHandler().InteractHandler = nullptr;
 			}
 			if(ALtHandlerValid&& AltGun==Gun)
 			{
+				AltGun->AttachToComponent(MainCamera,FAttachmentTransformRules::KeepRelativeTransform);
 				AltGun->Hide();
 				AbilityTagsToCancel.AddTag(AltGun->WeaponTagsMap["WeaponTag"]);
 				GetAltHandler().InteractHandler = nullptr;
@@ -116,6 +122,7 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		{
 			AbilityTagsToCancel.AddTag(MainGun->WeaponTagsMap["WeaponTag"]);
 			GetAbilitySystemComponent()->CancelAbilities(&AbilityTagsToCancel);
+			MainGun->AttachToComponent(MainCamera,FAttachmentTransformRules::KeepRelativeTransform);
 			MainGun->Hide();
 			GetMainHandler().InteractHandler = nullptr;
 		}

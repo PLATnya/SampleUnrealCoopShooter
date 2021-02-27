@@ -21,18 +21,10 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
-	
 
-	
 	UPROPERTY()
 	UMAttributeSetInventory* AmmoAttributeSet;
-
-	
-
-	
 	protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UCameraComponent* MainCamera;
 	UPROPERTY(Category=Inventory, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	class UMInventoryComponent* Inventory;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -40,6 +32,8 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	virtual void BeginPlay() override;
 	public:
 	AMPlayerCharacter();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UCameraComponent* MainCamera;
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable,Category = "Character")
 	void CheckLedge(int32 MaxTraceCount);
 	UFUNCTION(BlueprintCallable,Category="Inventory")

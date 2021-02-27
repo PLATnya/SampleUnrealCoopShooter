@@ -19,7 +19,10 @@ void AMGunActor::Show()
 
 void AMGunActor::Config()
 {
+	RootComponent->SetRelativeLocation(FVector::ZeroVector);
 	SetActorRelativeLocation(FVector::ZeroVector);
+	RootComponent->SetRelativeRotation(FRotator::ZeroRotator);
+	SetActorRelativeRotation(FRotator::ZeroRotator);
 }
 
 AMGunActor::AMGunActor()
