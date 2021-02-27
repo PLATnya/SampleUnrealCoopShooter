@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "MGunStateInterface.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MSpringArmComponent.generated.h"
 
@@ -16,6 +18,4 @@ class SAMPLEUNREALCOOPFPS_API UMSpringArmComponent : public USpringArmComponent
 public:
 	UMSpringArmComponent();
 	
-	UPROPERTY(BlueprintReadWrite)
-	class UMGunStateInterface *GunState;
 };

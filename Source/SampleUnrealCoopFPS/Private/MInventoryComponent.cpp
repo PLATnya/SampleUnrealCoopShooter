@@ -3,6 +3,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "MCharacterBase.h"
+#include "MPlayerCharacter.h"
 
 void UMInventoryComponent::BeginPlay()
 {
@@ -10,8 +11,6 @@ void UMInventoryComponent::BeginPlay()
 	APlayerController* WidgetOwner = Cast<APlayerController>(Cast<AMCharacterBase>(GetOwner())->GetController());
 	ScreenAmmoWidget = CreateWidget<UUserWidget>(WidgetOwner,AmmoWidget);
 	ScreenAmmoWidget->AddToPlayerScreen();
-
-	
 }
 
 UMInventoryComponent::UMInventoryComponent()
@@ -19,38 +18,40 @@ UMInventoryComponent::UMInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	GunsLimit = 5;
 	AmmoWidget = nullptr;
-	
 }
+
+ UMSpringArmComponent* UMInventoryComponent::AttachToArm(int32 Hand, AMGunActor* GunActor)
+{
+	AMPlayerCharacter* OwnerPlayer= Cast<AMPlayerCharacter>(GetOwner());
+	UMSpringArmComponent* Arm = Hand==0?OwnerPlayer->LeftArm:OwnerPlayer->RightArm;
+	GunActor->AttachToComponent(Arm, FAttachmentTransformRules::KeepRelativeTransform);
+	GunActor->SetActorRelativeRotation(FRotator::ZeroRotator);	
+	return Arm;
+}
+
 
 bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun)
 {
+	if(Guns.Num()>=GunsLimit||!NewGun->TryTake()) return false;
 	AMCharacterBase* Owner = Cast<AMCharacterBase>(GetOwner());
-	if(!NewGun->TryGet(Owner)) return false; 
-	
-	if(Guns.Num()>=GunsLimit) return false;
-	
-	Guns.Add(NewGun);	
+	Guns.Add(NewGun);
+	AttachToArm(0,NewGun);
 	NewGun->SetAbilitySystemComponent(Owner->GetAbilitySystemComponent());
-	
 	NewGun->AddAbilities(Guns.Num()+1);
 	
-	if(!NewGun->GunState)
-	{
-		UMCenterGunState* NewState = NewObject<UMCenterGunState>();
-		NewGun->GunState = NewState;
-		NewGun->GunState->SetGun(NewGun);
-		NewState->Config();
-	} 
-	NewGun->GunState->Hide();
+	NewGun->Config();
+	NewGun->Hide();
 	return true;
 }
+
+
 
 bool UMInventoryComponent::TryDropGun()
 {
 	AMCharacterBase* Owner = Cast<AMCharacterBase>(GetOwner());
-	if(Owner->MainHandler.InteractHandler)
+	if(Owner->GetMainHandler().InteractHandler)
 	{
-		AMGunActor* Gun = Cast<AMGunActor>(Owner->MainHandler.InteractHandler);
+		AMGunActor* Gun = Cast<AMGunActor>(Owner->GetMainHandler().InteractHandler);
 		if(Gun)
 		{
 			if(Gun->TryDrop())
@@ -59,7 +60,7 @@ bool UMInventoryComponent::TryDropGun()
 				const FVector Offset = Owner->GetTransform().TransformPosition(FVector(100,0,-50));
 				
 				Gun->SetActorLocation(Offset);
-				Owner->MainHandler.InteractHandler = nullptr;
+				Owner->GetMainHandler().InteractHandler = nullptr;
 				return true;
 			}
 		}

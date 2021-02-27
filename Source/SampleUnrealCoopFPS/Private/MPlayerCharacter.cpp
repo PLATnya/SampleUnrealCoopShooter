@@ -7,11 +7,9 @@ AMPlayerCharacter::AMPlayerCharacter()
 	
 	Inventory = CreateDefaultSubobject<UMInventoryComponent>("InventoryOfGuns");
 	AmmoAttributeSet = CreateDefaultSubobject<UMAttributeSetInventory>("AmmoAttributeSet");
-	/*
-	LeftArm = CreateDefaultSubobject<UMSpringArmComponent>("LeftArm");
-	RightArm = CreateDefaultSubobject<UMSpringArmComponent>("RightArm");
-	*/
-	
+
+	LeftArm = CreateDefaultSubobject<UMSpringArmComponent>("LeftSpringArm");
+	RightArm = CreateDefaultSubobject<UMSpringArmComponent>("RightSpringArm");
 }
 
 void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -34,7 +32,7 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 	AMGunActor* AltGun = Cast<AMGunActor>(AltHandler.InteractHandler);
 	const bool HandlerValid = IsValid(MainGun);
 	const bool ALtHandlerValid = IsValid(AltGun);
-	if(Gun->bTwoHanded)
+	if(Gun->IsTwoHanded())
 	{
 		if(MainGun == Gun)
 		{
@@ -123,6 +121,8 @@ void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 		
 	}
 }
+
+
 void AMPlayerCharacter::LookUp(float Value)
 {
 	if (IsAlive())

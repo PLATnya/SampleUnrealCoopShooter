@@ -4,13 +4,7 @@
 #include "AbilitySystemInterface.h"
 #include "MAttributeSetCharacter.h"
 #include "MCharacterBase.generated.h"
-/*
-UENUM()
-enum EHand
-{
-	Left  UMETA(DisplayName = "LeftHand") ,
-	Right UMETA(DisplayName = "RightHand")
-};*/
+
 
 USTRUCT(BlueprintType)
 struct FHandler
@@ -29,6 +23,11 @@ UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
+
+	UPROPERTY()
+	mutable FHandler MainHandler;
+	UPROPERTY()
+	mutable FHandler AltHandler;
 	UPROPERTY()
 	class UAbilitySystemComponent* AbilitySystemComponent;
 	UPROPERTY()
@@ -61,9 +60,11 @@ public:
 	virtual void SetHealth(float Health);
 	UFUNCTION(BlueprintCallable)
     void SwapHandlers();
+	FORCEINLINE FHandler& GetHandlerByHand(int32 Hand)
+	{
+		return MainHandler.Hand == Hand?MainHandler:AltHandler;
+	}
+	 FHandler&  GetMainHandler() const{return MainHandler;}
+	 FHandler& GetAltHandler() const {return AltHandler;}
 	
-	UPROPERTY(BlueprintReadOnly)
-	FHandler MainHandler;
-	UPROPERTY(BlueprintReadOnly)
-	FHandler AltHandler;	
 };

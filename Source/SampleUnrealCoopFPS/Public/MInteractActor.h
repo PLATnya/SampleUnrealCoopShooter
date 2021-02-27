@@ -15,21 +15,32 @@ UCLASS()
 class SAMPLEUNREALCOOPFPS_API AMInteractActor : public AActor
 {
 	GENERATED_BODY()
-protected:
 	int32 UsersCount;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 	int32 UsersLimit;
+	UPROPERTY(EditDefaultsOnly)
+	bool bTwoHanded;
+
+	bool bActive;
 public:
 	AMInteractActor();
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bTwoHanded;
-	
 	
 	UFUNCTION(BlueprintCallable, Category="Interact")
-	virtual bool TryGet(AActor* Parent = nullptr);
+	FORCEINLINE int32 GetUsersCount() const {return UsersCount;}
 	UFUNCTION(BlueprintCallable, Category="Interact")
+	FORCEINLINE int32 GetUsersLimit() const {return UsersLimit;}
+	UFUNCTION(BlueprintCallable, Category="Interact")
+    FORCEINLINE bool IsTwoHanded() const {return bTwoHanded;}
+	UFUNCTION(BlueprintCallable, Category="Interact")
+	void AddUser();
+	UFUNCTION(BlueprintCallable, Category="Interact")
+	bool TryDropFromHands();
+	UFUNCTION(BlueprintCallable, Category="Interact")
+	bool TryTake();
+	UFUNCTION( Category="Interact")
 	virtual bool TryDrop();
-	UFUNCTION(BlueprintCallable,Category="Interact")
-	virtual void SetActive(bool Active) ;	
+	UFUNCTION(BlueprintCallable,Category="Actor")
+	void SetActive(bool Active) ;
+	UFUNCTION(BlueprintCallable, Category="Actor")
+	FORCEINLINE bool IsActive() const {return bActive;}
 };

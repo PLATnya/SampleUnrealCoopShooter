@@ -6,19 +6,27 @@
 #include "Camera/CameraShakeSourceComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
-void AMGunActor::BeginPlay()
+
+void AMGunActor::Hide()
 {
-	Super::BeginPlay();
-	
-	
+	SetActive(false);
+}
+
+void AMGunActor::Show()
+{
+	SetActive(true);
+}
+
+void AMGunActor::Config()
+{
+	SetActorRelativeLocation(FVector::ZeroVector);
 }
 
 AMGunActor::AMGunActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	GunState = NewObject<UMLeftGunState>();
+	ClipHolder = NewObject<UMClipHolder>();
 	
-	//SkeletalMesh->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
 	RootComponent = CreateDefaultSubobject<USceneComponent>("GunRoot");
 	ArmComponent = CreateDefaultSubobject<USpringArmComponent>("Arm");
 	ArmComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
@@ -27,14 +35,13 @@ AMGunActor::AMGunActor()
 
 	ShakeSource = CreateDefaultSubobject<UCameraShakeSourceComponent>("Shake");
 	ShakeSource->AttachToComponent(ArmComponent,FAttachmentTransformRules::KeepRelativeTransform);
+
 	WeaponTagsMap.Add("WeaponTag", FGameplayTag::RequestGameplayTag("Weapon"));
 	WeaponTagsMap.Add("HandTag",FGameplayTag::EmptyTag);
-
-	bCanStartShoot = true;
 }
 
 
-void AMGunActor::AbilityShoot()
+void AMGunActor::Shoot()
 {
 	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::SHOOT]);
 }
@@ -43,61 +50,8 @@ void AMGunActor::AbilityShoot()
 void AMGunActor::Reload()
 {
 	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
-
 }
 
-int32 AMGunActor::GetClipCount()
-{
-	return ClipCount;
-}
-
-int32 AMGunActor::GetMaxClipCount()
-{
-	return MaxClipCount;
-}
-
-void AMGunActor::SetClipCount(int32 Count)
-{
-	ClipCount = Count;
-}
-
-void AMGunActor::SetMaxClipCount(int32 Count)
-{
-	MaxClipCount = Count;
-}
-
-
-bool AMGunActor::TryGet(AActor* Parent)
-{
-	if(Super::TryGet(Parent))
-	{
-		
-		AMCharacterBase* ParentCharacter = Cast<AMCharacterBase>(Parent);
-		if(ParentCharacter)
-		{	
-			USceneComponent* CamManagerComponent = Cast<APlayerController>(ParentCharacter->GetController())->PlayerCameraManager->GetTransformComponent();
-			AttachToComponent(CamManagerComponent,FAttachmentTransformRules::KeepRelativeTransform);
-			SetActorRelativeRotation(FRotator::ZeroRotator);
-		}
-		
-		return true;
-	}
-	return false;
-}
-
-bool AMGunActor::TryDrop()
-{
-	if(Super::TryDrop())
-	{
-		AActor* Parent = GetAttachParentActor();		
-		if(Parent)
-		{
-			DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);	
-			return true;
-		}
-	}
-	return false;
-}
 
 UAbilitySystemComponent* AMGunActor::GetAbilitySystemComponent() const
 {
@@ -124,7 +78,6 @@ void AMGunActor::AddAbilities(int32 InLevel)
 	for (auto& Ability : Abilities)
 	{
 		const FGameplayAbilitySpec Spec = FGameplayAbilitySpec(Ability.Value.GetDefaultObject(), InLevel, Index, this);
-		UGameplayAbility* f = NewObject<UMGameplayAbility>();
 		AbilitySpecHandles.Add(Ability.Key,GetAbilitySystemComponent()->GiveAbility(Spec));
 		Index++;
 	}
@@ -144,5 +97,29 @@ void AMGunActor::RemoveAbilities()
 	{
 		GetAbilitySystemComponent()->ClearAbility(SpecHandle.Value);
 	}
+}
+
+
+
+
+
+int32 UMClipHolder::GetClipCount()
+{
+	return ClipCount;
+}
+
+int32 UMClipHolder::GetMaxClipCount()
+{
+	return MaxClipCount;
+}
+
+void UMClipHolder::SetClipCount(int32 Count)
+{
+	ClipCount = Count;
+}
+
+void UMClipHolder::SetMaxClipCount(int32 Count)
+{
+	MaxClipCount = Count;
 }
 
