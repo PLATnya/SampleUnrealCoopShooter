@@ -28,13 +28,11 @@ AMGunActor::AMGunActor()
 	ClipHolder = CreateDefaultSubobject<UMClipHolder>("ClipHolder");
 	
 	RootComponent = CreateDefaultSubobject<USceneComponent>("GunRoot");
-	ArmComponent = CreateDefaultSubobject<USpringArmComponent>("Arm");
-	ArmComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("GunSkeletMesh");
-	SkeletalMesh->AttachToComponent(ArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SkeletalMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ShakeSource = CreateDefaultSubobject<UCameraShakeSourceComponent>("Shake");
-	ShakeSource->AttachToComponent(ArmComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	ShakeSource->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
 
 	WeaponTagsMap.Add("WeaponTag", FGameplayTag::RequestGameplayTag("Weapon"));
 	WeaponTagsMap.Add("HandTag",FGameplayTag::EmptyTag);

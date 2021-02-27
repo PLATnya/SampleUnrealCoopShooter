@@ -42,8 +42,6 @@ protected:
 	UPROPERTY(EditAnywhere , BlueprintReadOnly)
 	USkeletalMeshComponent* SkeletalMesh;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	USpringArmComponent* ArmComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UTexture2D* Icon;

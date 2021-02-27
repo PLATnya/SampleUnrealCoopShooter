@@ -1,6 +1,8 @@
 
 #include "MPlayerCharacter.h"
 
+
+
 AMPlayerCharacter::AMPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -8,8 +10,14 @@ AMPlayerCharacter::AMPlayerCharacter()
 	Inventory = CreateDefaultSubobject<UMInventoryComponent>("InventoryOfGuns");
 	AmmoAttributeSet = CreateDefaultSubobject<UMAttributeSetInventory>("AmmoAttributeSet");
 
+	MainCamera = CreateDefaultSubobject<UCameraComponent>("MainCamera");
+	MainCamera->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	
 	LeftArm = CreateDefaultSubobject<UMSpringArmComponent>("LeftSpringArm");
+	
 	RightArm = CreateDefaultSubobject<UMSpringArmComponent>("RightSpringArm");
+	LeftArm->AttachToComponent(MainCamera, FAttachmentTransformRules::KeepRelativeTransform);
+	RightArm->AttachToComponent(MainCamera, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -20,6 +28,14 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("LookUp", this, &AMPlayerCharacter::LookUp);
 	PlayerInputComponent->BindAxis("Turn", this, &AMPlayerCharacter::Turn);
 }
+
+void AMPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	/*USceneComponent* CameraTransform = Cast<APlayerController>(GetController())->PlayerCameraManager->GetTransformComponent();
+	LeftArm->AttachToComponent(CameraTransform,FAttachmentTransformRules::KeepRelativeTransform);
+	RightArm->AttachToComponent(CameraTransform,FAttachmentTransformRules::KeepRelativeTransform);*/
+}	
 
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)
 {

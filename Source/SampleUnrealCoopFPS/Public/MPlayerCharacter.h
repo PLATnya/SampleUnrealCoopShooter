@@ -8,7 +8,7 @@
 #include "MCharacterBase.h"
 #include "MInventoryComponent.h"
 #include "MSpringArmComponent.h"
-
+#include "Camera/CameraComponent.h"
 #include "MPlayerCharacter.generated.h"
 
 UCLASS()
@@ -20,18 +20,24 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	void Turn(float Value);
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+
+	
+
 	
 	UPROPERTY()
 	UMAttributeSetInventory* AmmoAttributeSet;
 
 	
+
 	
 	protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UCameraComponent* MainCamera;
 	UPROPERTY(Category=Inventory, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	class UMInventoryComponent* Inventory;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
+	virtual void BeginPlay() override;
 	public:
 	AMPlayerCharacter();
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable,Category = "Character")
