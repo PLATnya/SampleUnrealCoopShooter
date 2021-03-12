@@ -27,13 +27,17 @@ UWorld* GetTestWorld() {
 
 	return nullptr;
 }
+
 bool FGameTest::RunTest(const FString& Parameters) {
 	//AutomationOpenMap(TEXT("/Game/Levels/StartupLevel"));
-	
+#ifdef NDEBUG
 	bool a = false;
 	UWorld* World = GetTestWorld();
-	TestTrue("Essential actor is spawned", TActorIterator<AMGunActor>(World)->IsActorInitialized() );
 	
+	TestTrue("Essential actor is spawned", TActorIterator<AMGunActor>(World)->IsActorInitialized() );
+	return true;	
+#endif
 
-	return true;
+	return false;
 }
+

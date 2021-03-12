@@ -44,13 +44,13 @@ AMGunActor::AMGunActor()
 
 void AMGunActor::Shoot()
 {
-	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::SHOOT]);
+	if(HasAuthority()) GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::SHOOT]);
 }
 
 
 void AMGunActor::Reload()
 {
-	GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
+	if(HasAuthority()) GetAbilitySystemComponent()->TryActivateAbility(AbilitySpecHandles[EGunActions::RELOAD]);
 }
 
 
@@ -66,11 +66,7 @@ void AMGunActor::SetAbilitySystemComponent(UAbilitySystemComponent* Asc)
 
 void AMGunActor::AddAbilities(int32 InLevel)
 {
-	if (!GetAbilitySystemComponent())
-	{
-		return;
-	}
-	if (GetLocalRole() != ROLE_Authority)
+	if (!GetAbilitySystemComponent()||!HasAuthority())
 	{
 		return;
 	}

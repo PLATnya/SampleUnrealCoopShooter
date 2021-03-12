@@ -2,6 +2,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "MGunActor.h"
+
 #include "MSpringArmComponent.h"
 #include "Components/ActorComponent.h"
 #include "MInventoryComponent.generated.h"
@@ -24,6 +25,9 @@ class SAMPLEUNREALCOOPFPS_API UMInventoryComponent : public UActorComponent
 	UPROPERTY(Category="Widget", EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UUserWidget> AmmoWidget;
 
+	UFUNCTION()
+	void AddInventoryWidgetOnScreen(APlayerController* Controller);
+	
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	UMSpringArmComponent* AttachToArm(int32 Hand, AMGunActor* GunActor);
 	UFUNCTION(BlueprintCallable,Category="Inventory")
@@ -34,4 +38,6 @@ class SAMPLEUNREALCOOPFPS_API UMInventoryComponent : public UActorComponent
 	FORCEINLINE AMGunActor* GetGun(int32 Index) const{ return Index>=GunsLimit?nullptr:Guns[Index]; }
 	UFUNCTION(BlueprintCallable,BlueprintPure,Category="Inventory")
 	FORCEINLINE int32 GetGunsCount()const {return static_cast<int32>(Guns.Num());}
+	UFUNCTION(BlueprintCallable,BlueprintPure,Category="Inventory")
+	FORCEINLINE int32 GetGunsLimit()const {return GunsLimit;}
 };

@@ -32,9 +32,7 @@ void AMPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void AMPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	/*USceneComponent* CameraTransform = Cast<APlayerController>(GetController())->PlayerCameraManager->GetTransformComponent();
-	LeftArm->AttachToComponent(CameraTransform,FAttachmentTransformRules::KeepRelativeTransform);
-	RightArm->AttachToComponent(CameraTransform,FAttachmentTransformRules::KeepRelativeTransform);*/
+	Inventory->AddInventoryWidgetOnScreen(Cast<APlayerController>(GetController()));	
 }	
 
 void AMPlayerCharacter::ChangeWeapon(const int32 Index)

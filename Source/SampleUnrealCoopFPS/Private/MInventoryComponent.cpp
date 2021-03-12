@@ -8,9 +8,6 @@
 void UMInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	APlayerController* WidgetOwner = Cast<APlayerController>(Cast<AMCharacterBase>(GetOwner())->GetController());
-	ScreenAmmoWidget = CreateWidget<UUserWidget>(WidgetOwner,AmmoWidget);
-	ScreenAmmoWidget->AddToPlayerScreen();
 }
 
 UMInventoryComponent::UMInventoryComponent()
@@ -18,6 +15,17 @@ UMInventoryComponent::UMInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	GunsLimit = 5;
 	AmmoWidget = nullptr;
+}
+
+void UMInventoryComponent::AddInventoryWidgetOnScreen(APlayerController* Controller)
+{
+	if(!Controller)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("IT IS NO FUCKING CONTROLLER"));
+		return;
+	}
+	ScreenAmmoWidget = CreateWidget<UUserWidget>(Controller,AmmoWidget);
+	ScreenAmmoWidget->AddToPlayerScreen();
 }
 
  UMSpringArmComponent* UMInventoryComponent::AttachToArm(int32 Hand, AMGunActor* GunActor)

@@ -32,6 +32,7 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerCharacter : public AMCharacterBase
 	virtual void BeginPlay() override;
 	public:
 	AMPlayerCharacter();
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCameraComponent* MainCamera;
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable,Category = "Character")

@@ -1,5 +1,6 @@
 #include "MCharacterBase.h"
 
+#include "GameplayDebuggerTypes.h"
 
 
 AMCharacterBase::AMCharacterBase()
@@ -36,7 +37,9 @@ UAbilitySystemComponent* AMCharacterBase::GetAbilitySystemComponent() const
 }
 void AMCharacterBase::AddCharacterAbilities()
 {
-	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent))
+	//GetLocalRole() != ROLE_Authority
+	
+	if ( !HasAuthority()|| !IsValid(AbilitySystemComponent))
 	{
 		return;
 	}
