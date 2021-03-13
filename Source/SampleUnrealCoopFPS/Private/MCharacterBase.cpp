@@ -7,6 +7,7 @@ AMCharacterBase::AMCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
+	AbilitySystemComponent->SetIsReplicated(true);
 	AttributeSet = CreateDefaultSubobject<UMAttributeSetCharacter>(TEXT("AttributeSet"));
 	
 	MainHandler.Hand = 0;
@@ -14,6 +15,17 @@ AMCharacterBase::AMCharacterBase()
 	AltHandler.Hand = 1;
 	AltHandler.HandTag = FGameplayTag::RequestGameplayTag("Hand.Right");
 	
+}
+
+void AMCharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if(AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	}
+
+	SetOwner(NewController);
 }
 
 void AMCharacterBase::OnDeath_Implementation()
@@ -49,8 +61,7 @@ void AMCharacterBase::AddCharacterAbilities()
 	for (TSubclassOf<UGameplayAbility>& StartupAbility : CharacterAbilities)
 	{
 		AbilitySystemComponent->GiveAbility(
-            FGameplayAbilitySpec(StartupAbility, 1, index, this));
-		index++;
+            FGameplayAbilitySpec(StartupAbility, 0, 0, this));
 	}
 }
 

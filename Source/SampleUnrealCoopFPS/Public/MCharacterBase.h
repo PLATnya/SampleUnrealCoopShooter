@@ -42,6 +42,7 @@ protected:
 public:	
 	AMCharacterBase();
 
+	virtual void PossessedBy(AController* NewController) override;
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MCharacter|Life")
 	void OnDeath();
 	
