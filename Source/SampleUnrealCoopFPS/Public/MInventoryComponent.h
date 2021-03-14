@@ -14,14 +14,19 @@ class SAMPLEUNREALCOOPFPS_API UMInventoryComponent : public UActorComponent
 	
 	UPROPERTY(EditDefaultsOnly)
 	int32 GunsLimit;
-	UPROPERTY()
+	UPROPERTY(Replicated)
+	//UPROPERTY()
 	TArray<class AMGunActor*> Guns;
 	UPROPERTY()
 	UUserWidget* ScreenAmmoWidget;
 	protected:
 	virtual void BeginPlay() override;
 	public:
+	
+	
 	UMInventoryComponent();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	UPROPERTY(Category="Widget", EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UUserWidget> AmmoWidget;
 

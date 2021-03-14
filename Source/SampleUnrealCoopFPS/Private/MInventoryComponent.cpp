@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MCharacterBase.h"
 #include "MPlayerCharacter.h"
+#include "Engine/DemoNetDriver.h"
 
 void UMInventoryComponent::BeginPlay()
 {
@@ -15,6 +16,12 @@ UMInventoryComponent::UMInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	GunsLimit = 5;
 	AmmoWidget = nullptr;
+}
+
+void UMInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UMInventoryComponent,Guns);
 }
 
 void UMInventoryComponent::AddInventoryWidgetOnScreen(APlayerController* Controller)
@@ -42,10 +49,10 @@ bool UMInventoryComponent::TryAddGun(AMGunActor* NewGun)
 	if(Guns.Num()>=GunsLimit||!NewGun->TryTake()) return false;
 	AMPlayerCharacter* Owner = Cast<AMPlayerCharacter>(GetOwner());
 	Guns.Add(NewGun);
-	
+	NewGun->SetOwner(Owner);
 	NewGun->SetAbilitySystemComponent(Owner->GetAbilitySystemComponent());
-	NewGun->AddAbilities(Guns.Num()+1);
-
+	NewGun->AddAbilities(1);
+//Guns.Num()+1
 	NewGun->AttachToComponent(Owner->MainCamera,FAttachmentTransformRules::KeepRelativeTransform);
 	NewGun->Hide();
 	
