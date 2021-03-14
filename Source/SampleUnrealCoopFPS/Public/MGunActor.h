@@ -27,8 +27,32 @@ enum class EGunActions:uint8
 };
 
 
+/*USTRUCT(BlueprintType)
+struct FAbilityReplSpecHandleContainer
+{
+	GENERATED_BODY()
+	FGameplayAbilitySpecHandle AbilitySpecHandle;
+	EGunActions GunActions;
+	FAbilityReplSpecHandleContainer(FGameplayAbilitySpecHandle ASH,EGunActions GA):AbilitySpecHandle(ASH),GunActions(GA){}
+	FAbilityReplSpecHandleContainer() = default;
+};*/
 
 
+UCLASS()
+class UAbilitySpecHandlesMapContainer:public UObject
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(BlueprintReadOnly, Category = "GAS")
+	TMap<EGunActions,FGameplayAbilitySpecHandle> AbilitySpecHandles;
+	UAbilitySpecHandlesMapContainer() = default;
+
+	FORCEINLINE FGameplayAbilitySpecHandle& operator [](EGunActions Action)
+	{
+		return AbilitySpecHandles[Action];
+	}
+};
 UCLASS()	
 class SAMPLEUNREALCOOPFPS_API AMGunActor : public AMInteractActor,  public IAbilitySystemInterface,public IMGunStateInterface
 {
@@ -49,15 +73,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<AActor> Projectile;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly, Category = "GAS")
 	TMap<EGunActions,TSubclassOf<UMGameplayAbility>> Abilities;
-	UPROPERTY(BlueprintReadOnly, Category = "GAS")
-	TMap<EGunActions,FGameplayAbilitySpecHandle> AbilitySpecHandles;
+	
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly, Category = "Anim")
 	TMap<EGunActions,UAnimMontage*> ActionMontages;
-	
+
+	UPROPERTY()
+	UAbilitySpecHandlesMapContainer* SpecHandlesMapContainer; 
 public:
-	
 	
 	
 	AMGunActor();
