@@ -15,3 +15,5 @@ class SAMPLEUNREALCOOPFPS_API AMPlayerControllerBase : public APlayerController
 	GENERATED_BODY()
 	virtual void AcknowledgePossession(APawn* P) override;
 };
+
+
